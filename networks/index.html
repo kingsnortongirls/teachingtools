@@ -1,1 +1,94 @@
-<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102d59"><title>KNGS | Network Designer</title><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../assets/style.css"></head><body><header class="hero"><div class="wrap"><div class="brand">KINGS NORTON GIRLS' SCHOOL · COMPUTER SCIENCE</div><h1>Network Designer</h1><p>Build a small network and investigate how devices send data through connections.</p></div></header><main class="wrap shell"><div class="topbar"><a class="back" href="../">← All Teaching Tools</a><span class="tag">KS3 · GCSE · A Level</span></div><div class="stage"><div class="grid"><div class="panel"><h3>Design your network</h3><div class="fields"><div class="field"><label for="device">Device type</label><select id="device"><option>Computer</option><option>Switch</option><option>Router</option><option>Access point</option><option>Server</option></select></div><button class="btn" id="add">Add device</button><button class="btn alt" id="sample">Example network</button></div><div class="fields" style="margin-top:12px"><div class="field"><label for="from">Connect from</label><select id="from"></select></div><div class="field"><label for="to">Connect to</label><select id="to"></select></div><button class="btn" id="connect">Connect</button></div><svg id="diagram" class="svgbox" viewBox="0 0 620 370" aria-label="Network diagram"></svg><div class="fields" style="margin-top:12px"><div class="field"><label for="source">Send from</label><select id="source"></select></div><div class="field"><label for="destination">Send to</label><select id="destination"></select></div><button class="btn" id="send">Trace packet</button></div><div class="output" id="trace" aria-live="polite"></div></div><div class="panel soft"><h3>Understand your design</h3><div id="devices"></div><div class="output" id="networkInfo"></div><button class="btn warn" id="reset">Clear network</button><div class="notice">This demonstrates connectivity and paths in a simplified graph. It does not simulate real Ethernet frames, routing tables, IP addressing or wireless radio behaviour.</div></div></div><div class="appfoot">KNGS Computer Science · Interactive demonstration · No student login required</div></div></main><script src="../assets/common.js"></script><script>const $=KNGS.get;let nodes=[],edges=[],route=[];const positions=[[100,95],[315,95],[515,95],[100,275],[315,275],[515,275],[210,190],[420,190]];function add(type){if(nodes.length>=8)return alert('Maximum eight devices');nodes.push({id:nodes.length,type});render()}function link(a,b){if(a===b)return;if(!edges.some(e=>(e[0]===a&&e[1]===b)||(e[1]===a&&e[0]===b)))edges.push([a,b]);render()}function sample(){nodes=[];edges=[];['Computer','Switch','Router','Server','Computer','Access point'].forEach(add);[[0,1],[1,2],[1,3],[4,5],[5,2]].forEach(x=>link(...x));route=[];render()}function render(){const svg=$('diagram');svg.textContent='';edges.forEach(([a,b])=>{const [x,y]=positions[a],[z,w]=positions[b];KNGS.svg(svg,'line',{x1:x,y1:y,x2:z,y2:w,stroke:route.includes(a)&&route.includes(b)?'#d58329':'#8da9c4','stroke-width':route.includes(a)&&route.includes(b)?5:3})});nodes.forEach((n,i)=>{const [x,y]=positions[i];KNGS.svg(svg,'circle',{cx:x,cy:y,r:36,fill:route.includes(i)?'#e4af69':'#ddecfc',stroke:'#2866a2','stroke-width':2});const t=KNGS.svg(svg,'text',{x,y:y+4,'text-anchor':'middle','font-size':13,'font-weight':800,fill:'#183f6b'});t.textContent=n.type==='Access point'?'AP':n.type.slice(0,6);const lab=KNGS.svg(svg,'text',{x,y:y+55,'text-anchor':'middle','font-size':13,fill:'#315577'});lab.textContent=n.type+' '+(i+1)});for(const id of ['from','to','source','destination']){const s=$(id),val=s.value;s.innerHTML=nodes.map(n=>'<option value="'+n.id+'">'+n.type+' '+(n.id+1)+'</option>').join('');if([...s.options].some(o=>o.value===val))s.value=val};KNGS.show('devices',nodes.map(n=>'<p><strong>'+(n.id+1)+'. '+KNGS.esc(n.type)+'</strong> · '+edges.filter(e=>e.includes(n.id)).length+' connection(s)</p>').join(''));KNGS.text('networkInfo',nodes.length+' devices and '+edges.length+' connections.')}function send(){const s=Number($('source').value),t=Number($('destination').value);if(!nodes.length)return;const queue=[[s]],seen=new Set([s]);route=[];while(queue.length){const path=queue.shift(),end=path[path.length-1];if(end===t){route=path;break}for(const edge of edges){const next=edge[0]===end?edge[1]:edge[1]===end?edge[0]:null;if(next!==null&&!seen.has(next)){seen.add(next);queue.push([...path,next])}}}render();KNGS.text('trace',route.length?'Simplified packet route: '+route.map(i=>nodes[i].type+' '+(i+1)).join(' → '):'No connection path exists between those devices.')}$('add').onclick=()=>add($('device').value);$('connect').onclick=()=>link(Number($('from').value),Number($('to').value));$('sample').onclick=sample;$('send').onclick=send;$('reset').onclick=()=>{nodes=[];edges=[];route=[];render();KNGS.text('trace','Add and connect devices first.')};sample();</script></body></html>
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#102d59">
+<meta name="description" content="Interactive KS3, GCSE and A Level Computer Science network designer, connectivity lab and packet route simulator.">
+<title>KNGS | Network Designer &amp; Simulator</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="designer.css">
+</head>
+<body>
+<header class="hero"><div class="wrap"><div class="brand">KINGS NORTON GIRLS' SCHOOL · COMPUTER SCIENCE</div><h1>Network Designer &amp; Simulator</h1><p>Build, connect and test a network. Create topologies, inspect devices, compare paths and explore what happens when links fail.</p></div></header>
+<main class="wrap studio" id="studio">
+<div class="toolbar" role="toolbar" aria-label="Network designer toolbar">
+<a class="btn alt" href="../" style="text-decoration:none">← Teaching Tools</a>
+<span class="divider" aria-hidden="true"></span>
+<label for="sample">Example</label>
+<select id="sample" aria-label="Example network"><option value="">Choose a network…</option><option value="school">School LAN + Wi-Fi</option><option value="star">Star topology</option><option value="ring">Ring topology</option><option value="mesh">Full mesh</option><option value="resilient">Redundant routes</option><option value="sites">Two-site network</option></select>
+<button id="undoBtn" class="btn alt" title="Undo (Ctrl+Z)">↶ Undo</button><button id="redoBtn" class="btn alt" title="Redo (Ctrl+Y)">↷ Redo</button>
+<span class="divider" aria-hidden="true"></span>
+<button id="saveBtn" class="btn alt">Save</button><button id="loadBtn" class="btn alt">Load</button>
+<button id="exportBtn" class="btn alt">Export JSON</button><button id="importBtn" class="btn alt">Import JSON</button><button id="svgBtn" class="btn alt">Export SVG</button><button id="printBtn" class="btn alt">Print</button>
+<span class="divider" aria-hidden="true"></span>
+<button id="fullscreenBtn" class="btn" aria-pressed="false">⛶ Full screen</button>
+<input id="fileInput" type="file" accept=".json,application/json" hidden>
+</div>
+<div class="layout">
+<aside class="panel left" aria-label="Network device and link toolbox">
+<h2>Device palette</h2>
+<p class="muted">Select a device to add it, then drag it into position.</p>
+<div class="palette">
+<button class="device-btn" data-add="pc"><span class="glyph" aria-hidden="true">🖥️</span>Computer</button>
+<button class="device-btn" data-add="laptop"><span class="glyph" aria-hidden="true">💻</span>Laptop</button>
+<button class="device-btn" data-add="server"><span class="glyph" aria-hidden="true">🗄️</span>Server</button>
+<button class="device-btn" data-add="switch"><span class="glyph" aria-hidden="true">🔀</span>Switch</button>
+<button class="device-btn" data-add="router"><span class="glyph" aria-hidden="true">📡</span>Router</button>
+<button class="device-btn" data-add="ap"><span class="glyph" aria-hidden="true">📶</span>Access point</button>
+<button class="device-btn" data-add="printer"><span class="glyph" aria-hidden="true">🖨️</span>Printer</button>
+<button class="device-btn" data-add="firewall"><span class="glyph" aria-hidden="true">🛡️</span>Firewall</button>
+<button class="device-btn" data-add="nas"><span class="glyph" aria-hidden="true">💾</span>NAS</button>
+<button class="device-btn" data-add="phone"><span class="glyph" aria-hidden="true">📱</span>Phone</button>
+<button class="device-btn" data-add="tablet"><span class="glyph" aria-hidden="true">▤</span>Tablet</button>
+<button class="device-btn" data-add="cloud"><span class="glyph" aria-hidden="true">☁️</span>Cloud</button>
+</div>
+<div class="sectionline"></div>
+<h2>Editing tools</h2>
+<div class="tool-row" role="group" aria-label="Canvas mode">
+<button class="btn active" data-mode="select" aria-pressed="true">↖ Select</button>
+<button class="btn alt" data-mode="link" aria-pressed="false">↗ Connect</button>
+<button class="btn alt" data-mode="pan" aria-pressed="false">✋ Pan</button>
+</div>
+<div class="field"><label for="linkKind">New link medium</label><select id="linkKind"><option value="ethernet">Ethernet cable</option><option value="fibre">Fibre optic</option><option value="wireless">Wireless</option></select></div>
+<div class="helper"><strong>How to use</strong><br>Select and drag devices to arrange them. Choose <strong>Connect</strong>, then click two devices to join them. Select a connection to edit its speed, latency or status. Use <strong>Pan</strong> to move around the canvas.</div>
+<div class="helper">Keyboard: <kbd>Delete</kbd> removes the selected item, <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes, <kbd>Esc</kbd> cancels a connection. Use the zoom buttons to change the view.</div>
+</aside>
+<section class="panel canvasPanel" aria-label="Network canvas">
+<div class="canvashead"><div><strong>Network workspace</strong> <span id="summary" class="pill">0 devices · 0 links</span></div><div class="controls" aria-label="View controls">
+<button id="zoomOut" class="btn alt small" title="Zoom out">−</button><span id="zoomLabel" class="zoom-label">100%</span><button id="zoomIn" class="btn alt small" title="Zoom in">+</button><button id="fitBtn" class="btn alt small">Fit network</button>
+</div></div>
+<div class="viewport" id="viewport"><svg id="diagram" viewBox="0 0 1000 650" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Interactive network diagram with draggable devices and selectable connections">
+<defs>
+<pattern id="gridMinor" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#e7eef7" stroke-width="1"/></pattern>
+<pattern id="gridMajor" width="120" height="120" patternUnits="userSpaceOnUse"><path d="M120 0H0V120" fill="none" stroke="#d7e5f2" stroke-width="1.1"/></pattern>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#1b3b5e" flood-opacity=".13"/></filter>
+</defs>
+<rect width="3000" height="2000" fill="#fbfdff"/><rect width="3000" height="2000" fill="url(#gridMinor)"/><rect width="3000" height="2000" fill="url(#gridMajor)"/>
+<g id="links"></g><g id="routeLayer"></g><g id="deviceLayer"></g>
+</svg></div>
+<div class="canvasfoot"><span id="status" role="status" aria-live="polite">Ready. Choose an example or add a device.</span><span id="selectedLabel" class="pill">Nothing selected</span></div>
+</section>
+<aside class="panel right" aria-label="Network inspection and testing">
+<h2>Properties</h2>
+<div class="inspector" id="inspector"><p class="empty">Select a device or link to edit its properties.</p></div>
+<div class="sectionline"></div>
+<h2>Packet route lab</h2>
+<p class="muted">Choose endpoints and explore paths through <strong>active links</strong>. This is a graph-based teaching model.</p>
+<div class="field"><label for="source">Send from</label><select id="source"></select></div>
+<div class="field"><label for="destination">Send to</label><select id="destination"></select></div>
+<div class="field"><label for="pathMode">Route preference</label><select id="pathMode"><option value="hops">Fewest hops</option><option value="latency">Lowest total link latency</option></select></div>
+<div class="field rowfield"><div><label for="ttl">Hop limit</label><input id="ttl" type="number" min="1" max="64" value="16"></div><div><label for="packetSize">Packet size (KB)</label><input id="packetSize" type="number" min="1" max="1500" value="2"></div></div>
+<div class="tool-row"><button id="traceBtn" class="btn">Find route</button><button id="stepBtn" class="btn alt">Step ▶</button><button id="playBtn" class="btn alt">Play ▶</button><button id="stopBtn" class="btn alt">Reset</button></div>
+<div id="traceNotice" class="notice" aria-live="polite">Try comparing the fewest-hop path with the lowest-latency path.</div>
+<pre id="traceLog" class="code" aria-live="polite">No packet traced yet.</pre>
+<h2>Network diagnostics</h2>
+<div id="stats" class="statgrid"></div>
+<div id="diagnostics" class="notice">Add devices to begin.</div>
+<div class="challenge"><strong>Try this</strong><p id="challengeText">Start with the School LAN example. Can you make a packet take a different path by disabling one of its links?</p><button id="challengeBtn" class="btn alt small">New challenge</button></div>
+</aside>
+</div>
+<div class="footer">KNGS Computer Science · KS3, OCR GCSE J277 &amp; A Level H446 · Works locally · No account required. The simulator models graph paths, not real packet switching, IP routing, VLAN enforcement or wireless radio propagation.</div>
+</main>
+<script src="designer.js" defer></script>
+</body></html>
