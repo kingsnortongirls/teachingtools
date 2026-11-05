@@ -1,6 +1,6 @@
 # KNGS Computer Science | Teaching Tools
 
-A collection of 14 browser-based Computer Science learning labs for KS3, GCSE OCR J277 and A Level OCR H446.
+A collection of 15 browser-based Computer Science learning labs for KS3, GCSE OCR J277 and A Level OCR H446.
 
 ## Student website
 
@@ -18,6 +18,7 @@ teachingtools/
 │   ├── advanced.js            # CPU, sorting, Python, logic gates
 │   └── extra.js               # A Level interactive modules
 ├── binary/index.html          # Binary and Data Representation Lab
+├── binary-game/index.html     # Binary Blitz, five-level conversion game
 ├── flowcharts/index.html      # Algorithm / flowchart builder
 ├── command-line/index.html    # Simulated file-management terminal
 ├── networks/index.html        # Network designer
@@ -59,3 +60,7 @@ GitHub Pages serves `index.html` at the root and each module from its own direct
 ## Python tracing challenge lab
 
 The `python-tracing/` tool contains 192 deterministic, original practice variations across 16 topic families, with KS3, GCSE J277 and A Level H446 filters. Each has a Python listing, an expected output, hints, line-by-line guided states, retryable answer checking and browser-local first-attempt tracking. It is a prepared tracing engine, not a general-purpose Python interpreter. No account or external library is required.
+
+## Binary Blitz conversion game
+
+`binary-game/` is an original independent binary conversion practice game inspired by the pace of the Cisco binary game, without copying assets or source. It supports binary-to-denary and denary-to-binary questions, mixed mode, five levels of 4/5/6/7/8-bit values, eight correct questions to progress per level, an optional 90-second arcade round, place-value hints, bit-switch controls, streak bonuses and local personal bests. It requires no sign-in or external libraries.
