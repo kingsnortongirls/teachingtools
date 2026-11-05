@@ -1,1 +1,111 @@
-<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102d59"><title>KNGS | Python Code Tracing Trainer</title><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../assets/style.css"><script defer src="../assets/common.js"></script><script defer src="../assets/advanced.js"></script></head><body data-lab="python-tracing"><header class="hero"><div class="wrap"><div class="brand">KINGS NORTON GIRLS' SCHOOL · COMPUTER SCIENCE</div><h1>Python Code Tracing Trainer</h1><p id="subtitle"></p></div></header><main class="wrap shell"><div class="topbar"><a class="back" href="../">← All Teaching Tools</a><span class="tag" id="level"></span></div><div class="stage" id="app"></div><div class="appfoot">KNGS Computer Science · Interactive learning tools · No account needed</div></main></body></html>
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102d59"><title>KNGS | Python Code Tracing Challenge Lab</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../assets/style.css">
+<style>
+:root{--deep:#102d59;--accent:#195d9e}.trainer{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:16px}
+.training-card{border:1px solid #d4e0ed;border-radius:14px;padding:17px;background:#fff;min-width:0}
+.training-card.soft{background:#f7faff}.kicker{font-size:.76rem;font-weight:800;color:#527193;letter-spacing:.06em;text-transform:uppercase}
+.training-card h2{font-size:1.25rem;margin:5px 0 13px}.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+.controls label{display:grid;gap:4px;flex:1 1 165px}.controls select{width:100%}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.toolbar button{flex:1 1 auto}
+.codebox{margin:0;max-height:none;white-space:normal;padding:9px 0;counter-reset:ln;background:#142740;color:#f0f6ff;border:1px solid #0d2035;overflow:auto}
+.code-line{white-space:pre;display:block;padding:1px 12px;font:0.94rem/1.8 ui-monospace,Consolas,monospace;border-left:4px solid transparent}
+.code-line:before{counter-increment:ln;content:counter(ln);display:inline-block;width:2.2em;margin-right:14px;text-align:right;color:#98afcc;border-right:1px solid #557087;padding-right:9px}
+.code-line.active{background:#315a86;border-left-color:#ffcb66}.code-line.done{color:#d6ecdf}
+.response{display:grid;gap:8px}.response textarea{min-height:82px}
+.info{background:#eaf3ff;border:1px solid #c8ddef;border-radius:10px;padding:12px;margin-top:10px;font-size:.9rem}
+.correct{background:#e7f7ed;border-color:#93d2ac}.incorrect{background:#fff2df;border-color:#f0c98a}
+.stats{display:flex;gap:10px;flex-wrap:wrap}.stat{background:#e9f3ff;border-radius:10px;padding:9px 13px;flex:1 1 100px}.stat strong{display:block;font-size:1.2rem}
+.trace{overflow:auto;max-height:400px}.trace table{width:100%;font-size:.79rem}.trace tr.current{background:#e5f3e9}
+.pill{display:inline-flex;background:#e9f2fc;border-radius:99px;padding:5px 10px;font-size:.76rem;font-weight:800;color:#22598d}
+.tick{height:9px;background:#e2ebf5;border-radius:20px;overflow:hidden;margin:8px 0 15px}.tick div{height:100%;background:#29866b;transition:width .15s}
+.activity-note{font-size:.87rem;color:#536a83}.challenge-toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+@media(max-width:760px){.trainer{grid-template-columns:1fr}.training-card{padding:12px}.code-line{font-size:.82rem;padding-left:4px}.code-line:before{margin-right:8px}}
+@media print{.hero,.topbar,.toolbar,.controls,.challenge-toolbar,.response button,#teacherTools{display:none!important}.trainer{display:block}.training-card{break-inside:avoid;margin-bottom:12px}.codebox{background:#fff;color:#152c49}.code-line{color:#152c49!important}.stage{padding:4px;border:none}}
+</style></head>
+<body><header class="hero"><div class="wrap"><div class="brand">KINGS NORTON GIRLS' SCHOOL · COMPUTER SCIENCE</div>
+<h1>Python Code Tracing <span style="color:#c2e0ff">Challenge Lab</span></h1>
+<p>Predict what code does, find mistakes in your thinking and trace execution one step at a time. Original practice for KS3, OCR J277 and H446.</p></div></header>
+<main class="wrap shell"><div class="topbar"><a class="back" href="../">← All Teaching Tools</a><span class="tag">192 generated challenges · 16 topics</span></div>
+<div class="stage"><div class="controls">
+<label>Level<select id="level"><option value="all">All levels</option><option value="KS3">KS3</option><option value="GCSE">GCSE J277</option><option value="A Level">A Level H446</option></select></label>
+<label>Topic<select id="topic"></select></label>
+<label>Question<select id="question"></select></label></div>
+<div class="stats"><div class="stat"><span class="kicker">Completed</span><strong id="attempts">0</strong></div><div class="stat"><span class="kicker">Correct first try</span><strong id="accuracy">—</strong></div><div class="stat"><span class="kicker">Challenge</span><strong id="number">1/192</strong></div></div>
+<div class="trainer" style="margin-top:16px"><section class="training-card"><span class="kicker" id="topicLabel"></span><h2 id="title"></h2>
+<p id="instruction" class="activity-note"></p><pre class="codebox" id="code" aria-label="Python program"></pre>
+<div class="response"><label for="answer">Your prediction</label><textarea id="answer" placeholder="Type the exact output, with each printed line on a new line." spellcheck="false"></textarea>
+<div class="toolbar"><button class="btn" id="check">Check answer</button><button class="btn alt" id="hint">Give me a hint</button><button class="btn alt" id="reveal">Reveal answer</button></div><div id="feedback" class="info" aria-live="polite">Predict the output before viewing the trace.</div></div>
+<div class="challenge-toolbar" style="margin-top:14px"><button class="btn alt" id="previous">← Previous</button><button class="btn" id="next">Next challenge →</button></div></section>
+<section class="training-card soft"><span class="kicker">Guided execution</span><h2>Step-by-step Python trace</h2><p class="activity-note">Reveal the current statement, variable values and reasoning. Step-through uses a prepared execution model, not arbitrary code execution.</p>
+<div class="tick"><div id="progress"></div></div>
+<div class="toolbar"><button class="btn" id="step">Next step</button><button class="btn alt" id="back">Step back</button><button class="btn alt" id="finish">Show all steps</button><button class="btn alt" id="reset">Reset trace</button></div>
+<div id="explain" class="info" aria-live="polite">Start stepping through the program.</div><h3>Trace table</h3><div id="trace" class="trace"></div>
+<h3>Help with your learning</h3><p class="activity-note">Trace the changing values on paper, check every loop iteration and pay attention to indentation. The line shown is the statement or key event being traced.</p>
+<div class="toolbar" id="teacherTools"><button class="btn alt" id="print">Print activity</button><button class="btn alt" id="clear">Reset saved scores</button></div>
+</section></div>
+<div class="appfoot">No account needed. Scores stay in this browser on this website. Original examples, not copied exam questions. No external scripts or dependencies.</div></div></main>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id), KEY='kngs-python-trace-v2';
+const defs=[
+['Variables and reassignment','KS3'],['Arithmetic and precedence','KS3'],['Selection','KS3'],['Boolean conditions','GCSE'],['For loops','KS3'],['While loops','GCSE'],['Strings and slicing','GCSE'],['Lists and indexing','GCSE'],['Nested loops','GCSE'],['Functions and parameters','GCSE'],['Linear search','GCSE'],['Bubble sort','GCSE'],['Recursion','A Level'],['Dictionaries','A Level'],['List comprehensions','A Level'],['Two-dimensional arrays','A Level']
+];
+const states=Array.from({length:192},(_,id)=>({id,topic:Math.floor(id/12),variant:id%12}));
+let challenges=[],active=0,step=0,checked=false,scores={};
+try{scores=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){scores={}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(scores))}catch(e){}}
+function esc(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function py(x){if(typeof x==='boolean')return x?'True':'False';if(Array.isArray(x))return '['+x.map(py).join(', ')+']';return String(x)}
+function make(id){
+const t=Math.floor(id/12),v=id%12,a=2+(v%6),b=3+((v*3)%7),c=1+(v%4);
+let lines=[],steps=[],vars={},printed=[],hint='';
+function add(line,why,changes,output){if(changes)Object.assign(vars,changes);if(output!==undefined)printed.push(String(output));steps.push({line:line,state:Object.keys(vars).sort().map(k=>k+' = '+py(vars[k])).join('; '),out:printed.join('\n'),why:why})}
+function program(s){lines=s.split('\n')}
+function out(line,value,why){add(line,why,null,value)}
+switch(t){
+case 0:{const x=a+b,y=x*c;program('points = '+a+'\npoints = points + '+b+'\nresult = points * '+c+'\nprint(result)');add(1,'Assign the starting value.',{points:a});add(2,'Use the previous value before reassigning points.',{points:x});add(3,'Multiply the updated points value.',{result:y});out(4,y,'print outputs result.');hint='A variable can be reassigned. Work down the lines in order.';break}
+case 1:{const z=a+b*c,w=(a+b)*c;program('first = '+a+' + '+b+' * '+c+'\nsecond = ('+a+' + '+b+') * '+c+'\nprint(first)\nprint(second)');add(1,'Multiplication happens before addition.',{first:z});add(2,'Parentheses change the order.',{second:w});out(3,z,'Print first.');out(4,w,'Print second on a new line.');hint='Follow BIDMAS and treat each print as a new line.';break}
+case 2:{const score=8+a,threshold=11+b;program('score = '+score+'\nif score >= '+threshold+':\n    print("Pass")\nelse:\n    print("Try again")');add(1,'Initialise score.',{score});add(2,'Test score against the threshold: '+(score>=threshold?'True':'False')+'.');out(score>=threshold?3:5,score>=threshold?'Pass':'Try again','Only the selected branch runs.');hint='Check >= carefully. Exactly equal to the threshold counts as True.';break}
+case 3:{const x=a,y=b,valid=(x%2===0&&y>5);program('x = '+x+'\ny = '+y+'\nif x % 2 == 0 and y > 5:\n    print("Yes")\nelse:\n    print("No")');add(1,'Store x.',{x});add(2,'Store y.',{y});add(3,'Both conditions must be True. Here the result is '+py(valid)+'.');out(valid?4:6,valid?'Yes':'No','Print the matching branch.');hint='% returns a remainder; and requires both sides to be True.';break}
+case 4:{const start=1+(v%3),stop=start+3+(v%3),values=Array.from({length:stop-start},(_,i)=>start+i),sum=values.reduce((p,q)=>p+q,0);program('total = 0\nfor n in range('+start+', '+stop+'):\n    total = total + n\nprint(total)');add(1,'Start the running total.',{total:0});for(let n of values){add(2,'range includes '+n+' but excludes the stop value.',{n});let running=steps[steps.length-1].state;const totalNow=values.filter(x=>x<=n).reduce((p,q)=>p+q,0);add(3,'Add this iteration value to total.',{total:totalNow})}out(4,sum,'The final running total is printed.');hint='range(start, stop) includes start but excludes stop.';break}
+case 5:{let n=a+4,k=0;program('n = '+n+'\ncount = 0\nwhile n > '+c+':\n    n = n - 2\n    count = count + 1\nprint(count)');add(1,'Initial value of n.',{n});add(2,'Initialise count.',{count:0});while(n>c){add(3,'Condition True: '+n+' > '+c+'.');n-=2;k++;add(4,'Subtract 2 from n.',{n});add(5,'Count this iteration.',{count:k})}add(3,'Condition False: '+n+' is not greater than '+c+'.');out(6,k,'The loop has stopped.');hint='The condition is checked before every iteration, not after.';break}
+case 6:{const word=['COMPUTER','NETWORK','PYTHON','ALGORITHM','SOFTWARE','VARIABLE'][v%6],n=1+(v%3),slice=word.slice(n,n+3);program('word = "'+word+'"\npart = word['+n+':'+(n+3)+']\nprint(part)\nprint(len(word))');add(1,'Create the string.',{word});add(2,'Slice includes index '+n+' but not index '+(n+3)+'.',{part:slice});out(3,slice,'Print the selected substring.');out(4,word.length,'Count every character in the original string.');hint='String indices begin at zero. The end of a slice is excluded.';break}
+case 7:{let arr=[a,b,c,a+b],index=v%4,newval=arr[index]+c;program('values = '+py(arr)+'\nvalues['+index+'] = values['+index+'] + '+c+'\nprint(values['+index+'])\nprint(values)');add(1,'Create the list.',{values:arr.slice()});arr[index]=newval;add(2,'Update one element without changing the other positions.',{values:arr.slice()});out(3,newval,'Print the updated element.');out(4,py(arr),'Print the complete list.');hint='The first list element is index 0, not index 1.';break}
+case 8:{const outer=2+v%3,inner=2+(v%2);let z=0;program('total = 0\nfor row in range('+outer+'):\n    for col in range('+inner+'):\n        total = total + row + col\nprint(total)');add(1,'Start total at zero.',{total:0});for(let r=0;r<outer;r++){add(2,'Start an outer loop iteration.',{row:r});for(let q=0;q<inner;q++){add(3,'Start an inner loop iteration.',{col:q});z+=r+q;add(4,'Accumulate row + col.',{total:z})}}out(5,z,'All nested iterations are complete.');hint='Complete all the inner iterations before changing row.';break}
+case 9:{const x=a,y=b,z=x*2+y;program('def calculate(x, y):\n    result = x * 2 + y\n    return result\nanswer = calculate('+a+', '+b+')\nprint(answer)');add(1,'Define a function; its body has not run yet.');add(4,'Call calculate using the supplied arguments.',{x,y});add(2,'Evaluate the function body.',{result:z});add(3,'Return the result to the caller.');add(4,'Store the returned value.',{answer:z});out(5,z,'Print answer.');hint='Follow the argument values into the function and trace the return value.';break}
+case 10:{const arr=[4+a,9+b,3+c,7+a,2+b],pos=v%5,target=arr[pos];program('values = '+py(arr)+'\ntarget = '+target+'\nposition = -1\nfor i in range(len(values)):\n    if values[i] == target:\n        position = i\n        break\nprint(position)');add(1,'Set up the search list.',{values:arr});add(2,'Set the target value.',{target});add(3,'-1 means not yet found.',{position:-1});let found=-1;for(let i=0;i<arr.length;i++){add(4,'Inspect the next position.',{i});add(5,'Compare '+arr[i]+' with '+target+'.');if(arr[i]===target){found=i;add(6,'Found a match. Store the index.',{position:i});add(7,'break exits the loop.');break}}out(8,found,'The stored index is printed.');hint='Linear search checks positions in order. break exits at the first match.';break}
+case 11:{const orig=[a+7,b+2,c+9,1+v%6],arr=orig.slice();program('data = '+py(orig)+'\nfor i in range(len(data) - 1):\n    if data[i] > data[i + 1]:\n        data[i], data[i + 1] = data[i + 1], data[i]\nprint(data)');add(1,'Start with the unsorted list.',{data:arr.slice()});for(let i=0;i<arr.length-1;i++){add(2,'Compare the next adjacent pair.',{i});add(3,'Is '+arr[i]+' > '+arr[i+1]+'? '+py(arr[i]>arr[i+1])+'.');if(arr[i]>arr[i+1]){[arr[i],arr[i+1]]=[arr[i+1],arr[i]];add(4,'Swap the two elements.',{data:arr.slice()})}}out(5,py(arr),'One pass moves a large value towards the end; it does not necessarily fully sort the list.');hint='This code performs only one pass of bubble sort.';break}
+case 12:{const n=3+(v%5),value=n*(n+1)/2;program('def add_down(n):\n    if n == 0:\n        return 0\n    return n + add_down(n - 1)\nprint(add_down('+n+'))');add(1,'Define the recursive function.');for(let i=n;i>=0;i--)add(i===0?2:4,i===0?'Base case reached: return 0.':'add_down('+i+') waits for add_down('+(i-1)+').',{n:i});let total=0;for(let i=1;i<=n;i++){total+=i;add(4,'Unwind: return '+i+' plus the earlier result '+(total-i)+'.',{n:i,returned:total})}out(5,value,'The original function call returns '+value+'.');hint='Follow calls down to the base case, then add the return values while unwinding.';break}
+case 13:{const key=['Ada','Bo','Cy','De'][v%4],values={Ada:a+3,Bo:b+1,Cy:c+5,De:a+b};program('scores = '+JSON.stringify(values).replace(/:/g,': ')+'\nname = "'+key+'"\nscores[name] = scores[name] + '+c+'\nprint(scores[name])');add(1,'Create key:value pairs.',{scores:Object.assign({},values)});add(2,'Select a dictionary key.',{name:key});values[key]+=c;add(3,'Update the value stored against the selected key.',{scores:Object.assign({},values)});out(4,values[key],'Print the value at that key.');hint='A dictionary looks up a value using its key, not a numeric position.';break}
+case 14:{const arr=[a,b,c,a+1,b+1],result=arr.filter(x=>x%2===0).map(x=>x*2);program('nums = '+py(arr)+'\nresult = [x * 2 for x in nums if x % 2 == 0]\nprint(result)');add(1,'Create the original list.',{nums:arr});const collected=[];for(let x of arr){add(2,'Check whether '+x+' is even.',{x});if(x%2===0){collected.push(x*2);add(2,'Include double the even value.',{result:collected.slice()})}}add(2,'Complete the comprehension.',{result});out(3,py(result),'Print the new list.');hint='The if condition filters first, then the expression x * 2 transforms included values.';break}
+case 15:{const grid=[[a,b],[c,a+c],[b,c+b]],row=v%3,col=(v>>1)%2,val=grid[row][col]+2;program('grid = '+py(grid)+'\nrow = '+row+'\ncol = '+col+'\ngrid[row][col] = grid[row][col] + 2\nprint(grid[row][col])');add(1,'Create a two-dimensional list.',{grid:grid.map(r=>r.slice())});add(2,'Choose the outer list (row).',{row});add(3,'Choose an item within that row.',{col});grid[row][col]=val;add(4,'Update the chosen cell.',{grid:grid.map(r=>r.slice())});out(5,val,'Print the selected element.');hint='grid[row][col] uses the first index for the outer list, then the inner list.';break}
+}
+return {id,topic:t,variant:v,title:defs[t][0]+' · Challenge '+(v+1),code:lines,steps,answer:printed.join('\n'),hint};
+}
+function normalise(s){return String(s).trim().replace(/\r\n?/g,'\n').split('\n').map(x=>x.trim()).join('\n').replace(/,\s+/g,', ').replace(/\[\s+/g,'[').replace(/\s+\]/g,']')}
+function filtered(){const level=$('level').value,topic=$('topic').value;return states.filter(s=>(level==='all'||defs[s.topic][1]===level)&&(topic==='all'||s.topic===Number(topic)))}
+function refillTopics(){const level=$('level').value,old=$('topic').value;const avail=defs.map((d,i)=>({d,i})).filter(x=>level==='all'||x.d[1]===level);$('topic').innerHTML='<option value="all">All topics</option>'+avail.map(x=>'<option value="'+x.i+'">'+esc(x.d[0])+'</option>').join('');if(avail.some(x=>String(x.i)===old))$('topic').value=old;refillQuestions()}
+function refillQuestions(){challenges=filtered();const current=states[active];const ix=challenges.findIndex(x=>x.id===current.id);if(ix===-1)active=challenges[0].id;$('question').innerHTML=challenges.map(x=>'<option value="'+x.id+'">'+esc(defs[x.topic][0]+' · '+(x.variant+1))+'</option>').join('');render()}
+function render(){const item=make(active);step=0;checked=false;$('question').value=active;$('topicLabel').textContent=defs[item.topic][1]+' · '+defs[item.topic][0];$('title').textContent=item.title;$('instruction').textContent='Predict exactly what this Python program prints. Write each printed line on a separate line.';
+$('code').innerHTML=item.code.map((line,i)=>'<span class="code-line" data-line="'+(i+1)+'">'+(line?esc(line):' ')+'</span>').join('');
+$('answer').value='';$('feedback').className='info';$('feedback').textContent='Predict the output before viewing the trace.';$('number').textContent=(challenges.findIndex(x=>x.id===active)+1)+'/'+challenges.length;stats();drawTrace()}
+function drawTrace(){const item=make(active),all=item.steps;let last=step?all[step-1]:null;
+$('trace').innerHTML='<div class="tablewrap"><table><thead><tr><th>Step / line</th><th>Variable state</th><th>Output so far</th></tr></thead><tbody>'+all.slice(0,step).map((s,i)=>'<tr'+(i===step-1?' class="current"':'')+'><td>'+(i+1)+' / '+s.line+'</td><td>'+esc(s.state||'—')+'</td><td style="white-space:pre-wrap">'+esc(s.out||'—')+'</td></tr>').join('')+'</tbody></table></div>';
+$('explain').textContent=last?('Step '+step+' of '+all.length+': '+last.why):'Start stepping through the program.';$('progress').style.width=(100*step/all.length)+'%';
+document.querySelectorAll('.code-line').forEach(el=>{const line=Number(el.dataset.line);el.classList.toggle('active',!!last&&line===last.line);el.classList.toggle('done',step===all.length)});
+$('step').disabled=step===all.length;$('back').disabled=step===0;$('finish').disabled=step===all.length}
+function stats(){const vals=Object.values(scores);$('attempts').textContent=vals.length;$('accuracy').textContent=vals.length?Math.round(100*vals.filter(x=>x.first).length/vals.length)+'%':'—'}
+function feedback(message,positive){$('feedback').className='info '+(positive?'correct':'incorrect');$('feedback').textContent=message}
+$('level').addEventListener('change',refillTopics);$('topic').addEventListener('change',refillQuestions);$('question').addEventListener('change',()=>{active=Number($('question').value);render()});
+$('check').addEventListener('click',()=>{const item=make(active),val=$('answer').value;if(!val.trim()){feedback('Please type your predicted output first.',false);return}const good=normalise(val)===normalise(item.answer);if(!(active in scores)){scores[active]={first:good,date:new Date().toISOString()};save()}checked=true;feedback(good?'Correct! Excellent tracing.': 'Not quite. Compare your answer with each print statement, or use the step-by-step trace. Try again.',good);stats()});
+$('hint').addEventListener('click',()=>feedback('Hint: '+make(active).hint,false));$('reveal').addEventListener('click',()=>feedback('Correct output:\n'+make(active).answer,false));
+$('step').addEventListener('click',()=>{step=Math.min(step+1,make(active).steps.length);drawTrace()});$('back').addEventListener('click',()=>{step=Math.max(0,step-1);drawTrace()});$('finish').addEventListener('click',()=>{step=make(active).steps.length;drawTrace()});$('reset').addEventListener('click',()=>{step=0;drawTrace()});
+function shift(n){const i=challenges.findIndex(x=>x.id===active);active=challenges[(i+n+challenges.length)%challenges.length].id;render()}
+$('previous').addEventListener('click',()=>shift(-1));$('next').addEventListener('click',()=>shift(1));$('print').addEventListener('click',()=>window.print());
+$('clear').addEventListener('click',()=>{if(confirm('Reset all saved Python tracing scores on this browser?')){scores={};save();stats()}});
+refillTopics();
+})();
+</script></body></html>
