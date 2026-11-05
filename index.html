@@ -93,7 +93,7 @@ const fmt=n=>Number.isFinite(n)?new Intl.NumberFormat('en-GB',{maximumFractionDi
 const binary=(n,width)=>n.toString(2).padStart(width,'0');
 const svg=(name,attrs={})=>{const el=document.createElementNS('http://www.w3.org/2000/svg',name);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v)));return el};
 document.querySelectorAll('[data-tab]').forEach(button=>button.addEventListener('click',()=>openTab(button.dataset.tab)));
-function openTab(id){document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===id;b.setAttribute('aria-selected',String(active));$( 'tab-'+b.dataset.tab).hidden=!active});history.replaceState(null,'','#'+id);document.title='KNGS | '+({bits:'Binary Builder',hex:'Hexadecimal',maths:'Binary Maths',images:'Pixel Art',colour:'Colour Depth',sound:'Sound Sampling',size:'File Sizes',quiz:'Knowledge Check'}[id]||'Data Representation Lab'))}
+function openTab(id){document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===id;b.setAttribute('aria-selected',String(active));$( 'tab-'+b.dataset.tab).hidden=!active});history.replaceState(null,'','#'+id);document.title='KNGS | '+({bits:'Binary Builder',hex:'Hexadecimal',maths:'Binary Maths',images:'Pixel Art',colour:'Colour Depth',sound:'Sound Sampling',size:'File Sizes',quiz:'Knowledge Check'}[id]||'Data Representation Lab')}
 const validTabs=new Set(['bits','hex','maths','images','colour','sound','size','quiz']);
 const hash=location.hash.slice(1);if(validTabs.has(hash))openTab(hash);
 // 8-bit builder
