@@ -27,7 +27,9 @@ button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allow
 @media(max-width:950px){.layout{grid-template-columns:1fr}.sidebar{position:static}.roomnav{grid-template-columns:repeat(3,minmax(0,1fr))}.navbtn{padding:9px 7px}.sidehelp{display:none}}
 @media(max-width:620px){.dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.roomnav{grid-template-columns:repeat(2,minmax(0,1fr))}.packets,.gates{grid-template-columns:1fr}.byte{gap:5px}.byte strong{width:100%}.mainpanel{padding:19px}.cluelog{grid-template-columns:1fr}.hero{padding:24px 0 14px}.stat{padding:10px}.stat strong{font-size:1.15rem}}
 @media(prefers-reduced-motion:reduce){html{scroll-behaviour:auto}}
-@media print{body{background:#fff;color:#000}.topbar,.hero,.dashboard,.layout,.foot{display:none!important}.cert{display:block!important;color:#102d55;border:7px double #235587;padding:40px;min-height:85vh;text-align:center}.cert h1{font-size:46px}.cert p{font-size:21px}.cert .sig{margin-top:55px;border-top:1px solid #889;width:260px;margin-inline:auto;padding-top:8px}}
+.cert{display:none;position:fixed;inset:0;z-index:9999;overflow-y:auto;background:#06172de8;padding:clamp(12px,3vw,40px);align-items:center;justify-content:center;flex-direction:column;gap:12px}.cert.is-preview{display:flex}.cert-toolbar{width:min(1080px,100%);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;color:#fff;font-size:.93rem}.cert-toolbar .btn{background:#175b98;border-color:#84c5fc}.cert-paper{width:min(1080px,100%);aspect-ratio:1491/1055;background:#fff;box-shadow:0 20px 65px #0008;flex:none}.cert-art{display:block;width:100%;height:100%}body.cert-open{overflow:hidden}
+@page{size:A4 landscape;margin:0}
+@media print{html,body{margin:0!important;padding:0!important;width:297mm!important;height:210mm!important;overflow:hidden!important;background:#fff!important}body>*:not(.cert){display:none!important}.cert{display:block!important;position:static!important;inset:auto!important;padding:0!important;margin:0!important;background:#fff!important;width:297mm!important;height:210mm!important;overflow:hidden!important}.cert-toolbar{display:none!important}.cert-paper{width:297mm!important;height:210mm!important;max-width:none!important;box-shadow:none!important;break-inside:avoid!important;page-break-inside:avoid!important}.cert-art{width:100%!important;height:100%!important;display:block!important}body.cert-open{overflow:visible!important}}
 </style>
 </head>
 <body>
@@ -127,14 +129,80 @@ OUTPUT charge</div>
 <div id="m5" class="notice" role="status" aria-live="polite">Check your working carefully. Each of the five previous rooms contributes to the restore.</div>
 </section>
 <section id="complete" hidden>
-<div class="final"><span class="chapter">MISSION ACCOMPLISHED / SYSTEM RESTORED</span><h2>Blackout defeated.</h2><p>The backup server is online. The corrupted update has been isolated. Your team's careful reasoning saved the school's files.</p><p><strong id="finalTeam">Response Team</strong> finished in <strong id="finalTime">0:00</strong>, with <strong id="finalScore">600</strong> points.</p><div class="row"><button id="printCert" class="btn success">Print team certificate</button><button id="restart" class="btn alt">Start a fresh mission</button><a class="btn alt" href="../" style="text-decoration:none">Return to Teacher Tools</a></div></div>
+<div class="final"><span class="chapter">MISSION ACCOMPLISHED / SYSTEM RESTORED</span><h2>Blackout defeated.</h2><p>The backup server is online. The corrupted update has been isolated. Your team's careful reasoning saved the school's files.</p><p><strong id="finalTeam">Response Team</strong> finished in <strong id="finalTime">0:00</strong>, with <strong id="finalScore">600</strong> points.</p><div class="row"><button id="previewCert" class="btn alt">Preview certificate</button><button id="printCert" class="btn success">Print team certificate</button><button id="restart" class="btn alt">Start a fresh mission</button><a class="btn alt" href="../" style="text-decoration:none">Return to Teacher Tools</a></div></div>
 <div class="startbox"><strong>Debrief: What did your team use?</strong><p>Network routing, binary and ASCII, loop tracing, Boolean logic, packet sequencing, checksums and a multi-stage deduction. Which challenge required the most discussion?</p></div>
 </section>
 <div id="solvedBar" class="successbar" hidden><strong>✓ Room cleared: evidence recovered</strong><p id="solvedText"></p><button id="nextRoom" class="btn success">Continue to next room →</button></div>
 <div id="hintWrap" class="hints" hidden><strong>Need a nudge?</strong><p>Hints cost 15 points each. They explain the approach without handing you the solution.</p><div class="row"><button type="button" id="hintBtn" class="btn hint">Reveal a hint (−15 points)</button></div><div id="hintList"></div></div>
 </div></main>
 <footer class="wrap foot">KNGS Computer Science · Original practice puzzles · Accessible on school computers, tablets and phones · Progress stays in this browser</footer>
-<div class="cert" id="certificate"><p>KINGS NORTON GIRLS' SCHOOL · COMPUTER SCIENCE</p><h1>MISSION ACCOMPLISHED</h1><h2>Operation Blackout</h2><p>This certifies that <strong id="certTeam">Response Team</strong> successfully restored the backup server by solving six Computer Science puzzles.</p><p><strong id="certTime">30:00</strong> mission time · <strong id="certScore">600</strong> points</p><p class="sig">Teacher signature</p></div>
+<div class="cert" id="certificate" role="dialog" aria-modal="true" aria-label="Mission accomplished certificate" aria-hidden="true">
+<div class="cert-toolbar"><strong>Mission certificate preview</strong><div class="row"><button class="btn" type="button" id="printFromPreview">Print certificate</button><button class="btn alt" type="button" id="closeCert">Close preview</button></div></div>
+<div class="cert-paper"><svg class="cert-art" viewBox="0 0 1491 1055" role="img" aria-label="Navy and gold Operation Blackout certificate, personalised with team name, completion time and score" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="paperG" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d3e1f4"/><stop offset=".18" stop-color="#fff"/><stop offset=".78" stop-color="#fff"/><stop offset="1" stop-color="#d6e5f7"/></linearGradient>
+<linearGradient id="navyG" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#163c6a"/><stop offset=".4" stop-color="#041a3c"/><stop offset=".75" stop-color="#0a315d"/><stop offset="1" stop-color="#061631"/></linearGradient>
+<linearGradient id="goldG" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8b5d14"/><stop offset=".18" stop-color="#e4b954"/><stop offset=".39" stop-color="#fff1af"/><stop offset=".63" stop-color="#c58a28"/><stop offset=".85" stop-color="#fff0a6"/><stop offset="1" stop-color="#946417"/></linearGradient>
+<linearGradient id="plaqueG" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff8df"/><stop offset=".5" stop-color="#f5d682"/><stop offset="1" stop-color="#fff6d9"/></linearGradient>
+<radialGradient id="glowG"><stop stop-color="#d6e8fa" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<filter id="glowFilter" x="-35%" y="-40%" width="170%" height="180%"><feGaussianBlur stdDeviation="6"/></filter>
+<g id="circuitSymbol" fill="none" stroke="#bc8a2f" stroke-width="4"><path d="M0 0h40l28 28h100m-114 18h40l27-28h94m-215 52h54l45-30h60m-132 60h58l35-22h103"/><g fill="#fff3c7"><circle cx="168" cy="28" r="7"/><circle cx="215" cy="18" r="6"/><circle cx="159" cy="40" r="6"/><circle cx="173" cy="78" r="6"/></g></g>
+</defs>
+<rect width="1491" height="1055" fill="url(#navyG)"/>
+<rect x="27" y="27" width="1437" height="1001" rx="13" fill="url(#paperG)" stroke="url(#goldG)" stroke-width="8"/>
+<rect x="46" y="46" width="1399" height="963" rx="8" fill="none" stroke="#082950" stroke-width="4"/>
+<rect x="56" y="56" width="1379" height="943" rx="3" fill="none" stroke="url(#goldG)" stroke-width="3"/>
+<circle cx="190" cy="235" r="270" fill="url(#glowG)"/><circle cx="1342" cy="700" r="340" fill="url(#glowG)"/>
+<g opacity=".75"><use href="#circuitSymbol" x="62" y="65"/><use href="#circuitSymbol" transform="translate(1429 65) scale(-1 1)"/><use href="#circuitSymbol" transform="translate(62 991) scale(1 -1)"/><use href="#circuitSymbol" transform="translate(1429 991) scale(-1 -1)"/></g>
+<g fill="#d9a941" stroke="#8c5b11" stroke-width="3"><rect x="17" y="17" width="21" height="21"/><rect x="1453" y="17" width="21" height="21"/><rect x="17" y="1017" width="21" height="21"/><rect x="1453" y="1017" width="21" height="21"/></g>
+<g font-family="Georgia,'Times New Roman',serif" text-anchor="middle" fill="#081b38">
+<text x="745.5" y="100" font-size="37" letter-spacing="8" font-weight="700">KINGS NORTON GIRLS’ SCHOOL</text>
+<path d="M410 151h145m382 0h145" fill="none" stroke="#c79942" stroke-width="3"/>
+<g transform="translate(711 117)" fill="none" stroke="#b87d20" stroke-width="5"><rect x="0" y="0" width="69" height="50" rx="5" fill="#eaf6ff" stroke="#0a2f5d"/><path d="M-7 55h83l-10 10H5z" fill="#0a2f5d"/><path d="m18 22-9 7 9 7m34-14 9 7-9 7m-17-18-10 32"/></g>
+<text x="745.5" y="224" font-size="44" font-weight="700" letter-spacing="10">COMPUTER SCIENCE</text>
+</g>
+<!-- main celebration ribbon -->
+<path d="M121 290H1370L1318 345 1370 391H121L173 345Z" fill="url(#goldG)" stroke="#89601c" stroke-width="4"/>
+<path d="M168 258H1323L1300 349 1323 413H168L191 349Z" fill="url(#navyG)" stroke="url(#goldG)" stroke-width="8"/>
+<path d="M184 270H1307L1287 347 1307 401H184L204 347Z" fill="none" stroke="#f6dc94" stroke-width="2"/>
+<text x="745.5" y="359" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="81" letter-spacing="1.2" fill="#dba73c" opacity=".55" filter="url(#glowFilter)">MISSION ACCOMPLISHED</text>
+<text x="745.5" y="352" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="81" letter-spacing="1.2" fill="#ffe59c" stroke="#6a4210" stroke-width=".6">MISSION ACCOMPLISHED</text>
+<path d="M485 402H1006L1044 432 1006 466H485L446 432Z" fill="url(#plaqueG)" stroke="#aa7520" stroke-width="4"/>
+<text x="745.5" y="446" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="50" font-style="italic" fill="#071c3b">Operation Blackout</text>
+<text x="745.5" y="516" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="36" font-style="italic" fill="#122743">This certifies that</text>
+<text id="certTeam" x="745.5" y="603" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="65" font-weight="700" letter-spacing="2" fill="#071a36">RESPONSE TEAM</text>
+<path d="M345 623h800" fill="none" stroke="url(#goldG)" stroke-width="4"/>
+<text x="745.5" y="684" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="32" font-style="italic" fill="#122743">successfully restored the backup server by</text>
+<text x="745.5" y="727" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="32" font-style="italic" fill="#122743">solving six Computer Science puzzles.</text>
+<!-- faint side hexagons and technology illustrations -->
+<g stroke="#a2c5e6" stroke-width="4" fill="#ecf6fe" opacity=".75">
+<path d="M210 477l68 40v78l-68 40-68-40v-78z"/><path d="M1290 477l68 40v78l-68 40-68-40v-78z"/>
+<rect x="182" y="533" width="57" height="50" rx="10" fill="none" stroke="#6297cb" stroke-width="10"/>
+<path d="M193 534v-15a18 18 0 0 1 36 0v15" fill="none" stroke="#6297cb" stroke-width="10"/>
+<rect x="1263" y="532" width="55" height="14" rx="3" stroke="#6297cb"/><rect x="1263" y="557" width="55" height="14" rx="3" stroke="#6297cb"/>
+</g>
+<g font-family="monospace" font-size="18" fill="#7eafd8" opacity=".7" letter-spacing="4"><text x="75" y="481">010101</text><text x="75" y="508">110010</text><text x="1310" y="481">010011</text><text x="1310" y="508">101100</text></g>
+<!-- mission time and score; dynamic values placed inside a graphic panel -->
+<path d="M407 768H1084L1111 803 1084 844H407L380 803Z" fill="#fffdf7" stroke="url(#goldG)" stroke-width="5"/>
+<path d="M416 778H1075" stroke="#ecdaa8" stroke-width="2" opacity=".8"/>
+<text x="470" y="817" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="29" fill="#081b38">Mission time:</text>
+<text id="certTime" x="638" y="817" text-anchor="start" font-family="Georgia,'Times New Roman',serif" font-size="29" font-weight="700" fill="#081b38">30:00</text>
+<circle cx="771" cy="805" r="7" fill="#c48b2b"/>
+<text x="820" y="817" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="29" fill="#081b38">Score:</text>
+<text id="certScore" x="922" y="817" text-anchor="start" font-family="Georgia,'Times New Roman',serif" font-size="29" font-weight="700" fill="#081b38">600</text>
+<!-- rosette medal, ribbon tails, decorative footer waves -->
+<path d="M98 941L153 852L200 896L236 855L299 966L239 945L212 1002L178 947L135 989Z" fill="url(#navyG)" stroke="url(#goldG)" stroke-width="6"/>
+<circle cx="192" cy="865" r="89" fill="url(#goldG)" stroke="#8e631b" stroke-width="6"/>
+<circle cx="192" cy="865" r="72" fill="url(#navyG)" stroke="#ffe9a6" stroke-width="4"/>
+<circle cx="192" cy="865" r="62" fill="none" stroke="#cb9d47" stroke-width="2" stroke-dasharray="4 8"/>
+<rect x="163" y="831" width="59" height="40" rx="4" fill="none" stroke="#ffe09a" stroke-width="5"/>
+<path d="M155 879h74m-37-8v8m-14-22-8-6 8-6m28 0 8 6-8 6m-12-15-7 20" fill="none" stroke="#ffe09a" stroke-width="4"/>
+<path d="M192 898l5 10 12 2-9 9 2 12-10-6-10 6 2-12-9-9 12-2z" fill="#ffd273"/>
+<path d="M492 925h509" stroke="#132b4b" stroke-width="3"/>
+<text x="745.5" y="960" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="25" font-style="italic" fill="#172d4b">Teacher signature</text>
+<path d="M61 985Q335 955 540 1005H61Z" fill="#133b6e" stroke="url(#goldG)" stroke-width="5" opacity=".78"/>
+<path d="M1430 982Q1140 951 935 1006H1430Z" fill="#12345d" stroke="url(#goldG)" stroke-width="5" opacity=".78"/>
+</svg></div></div>
 <script>
 (function(){
 'use strict';
@@ -186,11 +254,17 @@ el('clearPackets').onclick=function(){if(st.solved[4])return;st.packets=[];save(
 el('checkPackets').onclick=function(){if(st.solved[4])return;var ids=st.packets;if(ids.length!==4){wrong(4,'The message needs four packets. Select exactly four in sequence order.');return;}for(var i=0;i<ids.length;i++){var p=packets[ids[i]],calc=p.data.split('').reduce(function(sum,ch){return sum+ch.charCodeAt(0)-64;},0)%10;if(calc!==p.sum){wrong(4,'At least one chosen packet failed its checksum. Recalculate its letters and final digit.');return;}if(p.seq!==i+1){wrong(4,'Your valid packets are not in sequence order 01, 02, 03, 04.');return;}}if(ids.map(function(id){return packets[id].data;}).join('')==='RESTORE')solved(4,'RESTORE');else wrong(4,'The reassembled command is not valid. Review packet selection.');};
 function renderClues(){var labels=['Safe route relay tag','ASCII password','Algorithm output','Logic inputs','Recovered command'];var box=el('cluelog');box.textContent='';labels.forEach(function(label,i){var d=document.createElement('div');d.className='clue',small=document.createElement('small'),strong=document.createElement('strong');small.textContent=label;strong.textContent=st.tokens['r'+i]||'Not found';d.appendChild(small);d.appendChild(strong);box.appendChild(d);});}
 el('f5').addEventListener('submit',function(e){e.preventDefault();if(st.solved[5])return;var cmd=el('command').value.trim().toUpperCase(),route=el('routeTag').value.trim(),pin=el('pin').value.trim();if(cmd!=='RESTORE'||route!=='451'||pin!=='2403'){wrong(5,'Access denied. One or more values are wrong. Verify the command, relay tag and each digit of the derived PIN.');return;}solved(5,'SYSTEM RESTORED');});
-function renderFinish(){var team=st.team||'Response Team',elapsed=timeStr(clockSecs());el('finalTeam').textContent=team;el('finalTime').textContent=elapsed;el('finalScore').textContent=String(score());el('certTeam').textContent=team;el('certTime').textContent=elapsed;el('certScore').textContent=String(score());}
+function renderFinish(){var team=st.team||'Response Team',elapsed=timeStr(clockSecs());el('finalTeam').textContent=team;el('finalTime').textContent=elapsed;el('finalScore').textContent=String(score());el('certTeam').textContent=team.toUpperCase();el('certTeam').setAttribute('font-size',team.length>28?'37':team.length>21?'46':team.length>15?'55':'65');el('certTeam').setAttribute('textLength',team.length>31?'720':'');el('certTime').textContent=elapsed;el('certScore').textContent=String(score());}
 el('start').onclick=function(){if(st.startedAt)return;st.team=el('team').value.trim().slice(0,35);st.startedAt=Date.now();view=0;save();render();};
 el('nextRoom').onclick=function(){if(view<0||view>5||!st.solved[view])return;view=view===5?6:view+1;render();el('mainpanel').scrollIntoView({block:'start'});};
 el('restart').onclick=function(){if(!confirm('Start again? All mission progress on this device will be cleared.'))return;st=newState();view=-1;save();el('team').value='';document.querySelectorAll('form').forEach(function(f){f.reset();});document.querySelectorAll('.notice').forEach(function(n){n.className='notice';});render();window.scrollTo({top:0,behaviour:'auto'});};
+function certificatePreview(open){el('certificate').classList.toggle('is-preview',open);el('certificate').setAttribute('aria-hidden',String(!open));document.body.classList.toggle('cert-open',open);}
+el('previewCert').onclick=function(){renderFinish();certificatePreview(true);el('closeCert').focus();};
+el('closeCert').onclick=function(){certificatePreview(false);el('previewCert').focus();};
+el('certificate').addEventListener('click',function(e){if(e.target===el('certificate'))certificatePreview(false);});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&el('certificate').classList.contains('is-preview'))certificatePreview(false);});
 el('printCert').onclick=function(){renderFinish();window.print();};
+el('printFromPreview').onclick=function(){renderFinish();window.print();};
 if(st.team)el('team').value=st.team;
 render();setInterval(updateStats,1000);
 })();
