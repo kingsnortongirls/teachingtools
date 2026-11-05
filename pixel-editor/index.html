@@ -1,1 +1,141 @@
-<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102d59"><title>KNGS | Pixel Art & Image Editing</title><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../assets/style.css"></head><body><header class="hero"><div class="wrap"><div class="brand">KINGS NORTON GIRLS' SCHOOL · COMPUTER SCIENCE</div><h1>Pixel Art & Image Editing</h1><p>Investigate layers, transparency, resolution and binary image data.</p></div></header><main class="wrap shell"><div class="topbar"><a class="back" href="../">← All Teaching Tools</a><span class="tag">KS3 · GCSE</span></div><div class="stage"><div class="grid"><div class="panel"><h3>Pixel editor · 12 × 12</h3><div class="fields"><div class="field"><label for="layer">Active layer</label><select id="layer"><option value="0">Background layer</option><option value="1">Foreground layer</option></select></div><div class="field"><label for="brush">Brush</label><select id="brush"><option value="1">Paint</option><option value="0">Erase</option></select></div><button class="btn alt" id="clear">Clear layer</button><button class="btn alt" id="example">Example</button></div><div id="pixel" class="pixelgrid" style="margin:14px 0"></div><p class="muted">Choose a layer and click pixels. Foreground pixels appear blue; background pixels are pale blue. Erasing foreground reveals the layer beneath.</p></div><div class="panel soft"><h3>Representation</h3><div class="fields"><div class="field"><label for="scale">Preview magnification</label><select id="scale"><option value="1">1× logical size</option><option value="2">2×</option><option value="4">4×</option></select></div><div class="field"><label for="depth">Colour depth</label><select id="depth"><option value="1">1 bit per pixel</option><option value="4">4 bits per pixel</option><option value="8">8 bits per pixel</option><option value="24">24 bits per pixel</option></select></div></div><div class="output"><strong id="stats"></strong><p class="muted" id="formula"></p></div><h3>Flattened image, row by row</h3><pre id="binary"></pre><div class="notice">The 1-bit binary rows show whether each visible pixel is coloured, regardless of which layer holds it. Layer metadata is not included in the raw image-size calculation.</div></div></div><div class="appfoot">KNGS Computer Science · Interactive demonstration · No student login required</div></div></main><script src="../assets/common.js"></script><script>const $=KNGS.get;let layers=[Array(144).fill(0),Array(144).fill(0)];function render(){const grid=$('pixel');grid.textContent='';const active=Number($('layer').value);for(let i=0;i<144;i++){const p=document.createElement('button');p.type='button';p.className='pixel';const colour=layers[1][i]?'#1a5d9e':layers[0][i]?'#92bde6':'#ffffff';p.style.background=colour;p.setAttribute('aria-label','Row '+(Math.floor(i/12)+1)+' column '+(i%12+1));p.addEventListener('click',()=>{layers[active][i]=Number($('brush').value);render()});grid.append(p)}const visible=layers[0].map((x,i)=>Number(Boolean(x||layers[1][i]))),bits=Number($('depth').value);KNGS.text('binary',Array.from({length:12},(_,r)=>visible.slice(r*12,r*12+12).join('')).join('\n'));KNGS.text('stats',(144*bits)+' bits · '+Math.ceil(144*bits/8)+' bytes');KNGS.text('formula','12 × 12 pixels × '+bits+' bits per pixel = '+(144*bits)+' bits before metadata or compression. Image dimensions stay 12 × 12; magnification only changes display size.');grid.style.maxWidth=Number($('scale').value)===1?'300px':Number($('scale').value)===2?'420px':'560px'}$('clear').onclick=()=>{layers[Number($('layer').value)].fill(0);render()};$('example').onclick=()=>{layers=[Array(144).fill(0),Array(144).fill(0)];for(let y=2;y<10;y++)for(let x=2;x<10;x++)if(x===2||x===9||y===2||y===9)layers[0][y*12+x]=1;[4*12+4,4*12+7,7*12+4,7*12+5,7*12+6,7*12+7].forEach(i=>layers[1][i]=1);render()};['scale','depth','layer'].forEach(x=>$(x).addEventListener('change',render));$('example').click();</script></body></html>
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102d59">
+<title>KNGS | Pixel Art & Image Editing</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+.pixel-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px}
+.pixel-layout .panel{min-width:0}
+.pixel-canvas{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));max-width:480px;width:100%;border:2px solid #1d4768;border-radius:6px;overflow:hidden;touch-action:manipulation;box-shadow:0 8px 24px #112f4b20}
+.pixel-cell{display:block;aspect-ratio:1;border:1px solid #163a581d;padding:0;min-width:0;min-height:0;border-radius:0;cursor:crosshair}
+.pixel-cell:focus-visible{outline:3px solid #f2a900;outline-offset:-3px;position:relative;z-index:1}
+.palette{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;margin:10px 0}
+.swatch{aspect-ratio:1;border:2px solid #a7bbc9;border-radius:8px;min-height:30px;cursor:pointer;position:relative}
+.swatch.selected{outline:3px solid #12345b;outline-offset:2px;border-color:white}
+.swatch.selected:after{content:"✓";display:grid;place-items:center;position:absolute;right:0;bottom:0;width:18px;height:18px;border-radius:50%;background:#12345b;color:white;font-size:12px}
+.code-output{max-height:285px;overflow:auto;white-space:pre;font:12px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace;padding:13px;border-radius:10px;background:#102d49;color:#ecf7ff}
+.hint{font-size:14px;color:#52677b}
+.depth-note{border-left:4px solid #1c88b9;padding:9px 12px;background:#eef8fe;border-radius:8px;margin:12px 0}
+.field select{max-width:100%}
+.pixel-preview{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.pixel-preview canvas{image-rendering:pixelated;border:1px solid #7393a9;background:white;max-width:100%}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:13px}
+.legend strong{color:#153858}
+@media(max-width:800px){.pixel-layout{grid-template-columns:1fr}.palette{grid-template-columns:repeat(8,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+<div class="brand">KINGS NORTON GIRLS' SCHOOL · COMPUTER SCIENCE</div>
+<h1>Pixel Art & Image Editing</h1>
+<p>Explore how colour depth changes the number of colours, binary image data and file size.</p>
+</div></header>
+<main class="wrap shell">
+<div class="topbar"><a class="back" href="../">← All Teaching Tools</a><span class="tag">KS3 · GCSE</span></div>
+<div class="stage">
+<div class="pixel-layout">
+<section class="panel">
+<h3>Pixel editor · 12 × 12</h3>
+<div class="fields">
+<div class="field"><label for="depth">Colour depth</label><select id="depth">
+<option value="1">1 bit · 2 colours</option><option value="4">4 bits · 16 colours</option><option value="8">8 bits · 256 colours</option>
+</select></div>
+<div class="field"><label for="layer">Active layer</label><select id="layer"><option value="0">Background</option><option value="1">Foreground</option></select></div>
+<div class="field"><label for="brush">Brush</label><select id="brush"><option value="paint">Paint</option><option value="erase">Erase</option></select></div>
+</div>
+<p id="depthExplanation" class="depth-note" aria-live="polite"></p>
+<div class="pixel-preview"><button class="btn alt" type="button" id="example">Load 1-bit example</button><button class="btn alt" type="button" id="clear">Clear active layer</button></div>
+<h4 style="margin-top:18px">Choose a colour</h4>
+<div id="palette" class="palette" role="group" aria-label="Colour palette"></div>
+<p class="hint" id="paletteHelp">Select a colour, then click a pixel to paint it.</p>
+<div id="pixel" class="pixel-canvas" role="group" aria-label="12 by 12 pixel editor"></div>
+<p class="hint">Change colour depth to see how the same artwork is mapped to a different palette. Select <strong>Load example</strong> for a picture designed for that depth. The foreground sits above the background; erasing it reveals the background below.</p>
+</section>
+<section class="panel soft">
+<h3>Representation</h3>
+<div class="fields"><div class="field"><label for="scale">Preview magnification</label>
+<select id="scale"><option value="1">1×</option><option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option></select></div></div>
+<div class="pixel-preview" style="margin:12px 0"><canvas id="preview" width="12" height="12" style="width:96px;height:96px" aria-label="Magnified image preview" role="img"></canvas><p class="hint">The resolution stays <strong>12 × 12 pixels</strong> even if the preview is enlarged.</p></div>
+<div class="output"><strong id="stats"></strong><p class="muted" id="formula"></p><p id="range" class="hint"></p></div>
+<h3>Flattened image data · row by row</h3>
+<p class="hint" id="encodingHelp"></p>
+<pre class="code-output" id="binary" aria-label="Binary pixel data"></pre>
+<div class="notice">These are the actual palette indexes of the visible pixels, encoded using the selected number of bits per pixel. The calculation assumes uncompressed indexed-colour pixel data and excludes the colour palette, metadata, file headers and layer information. A real image file may be larger.</div>
+</section>
+</div>
+<div class="appfoot">KNGS Computer Science · Interactive demonstration · No student login required</div>
+</div></main>
+<script src="../assets/common.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var N=12,SIZE=N*N,depth=1,selected=1;
+var layers=[Array(SIZE).fill(0),Array(SIZE).fill(-1)];
+var palettes={
+1:['#ffffff','#162c49'],
+4:['#ffffff','#172b49','#305e9e','#3a95c8','#83cbed','#c4e8fb','#f7df8d','#f2ad52','#d66f50','#a74f72','#704c9d','#4a8d67','#8fc77f','#b8a18b','#788b9a','#303b44']
+};
+function rgb(hex){return [1,3,5].map(function(i){return parseInt(hex.slice(i,i+2),16)})}
+function toHex(rgbv){return '#'+rgbv.map(function(n){return Math.max(0,Math.min(255,Math.round(n))).toString(16).padStart(2,'0')}).join('')}
+function make256(){var out=[];for(var r=0;r<6;r++)for(var g=0;g<6;g++)for(var b=0;b<6;b++)out.push(toHex([r*51,g*51,b*51]));for(var j=0;j<40;j++){var v=Math.round(j*255/39);out.push(toHex([v,v,v]))}return out}
+palettes[8]=make256();
+function pal(){return palettes[depth]}
+function colour(idx){return pal()[Math.max(0,Math.min(pal().length-1,idx))]}
+function visible(i){return layers[1][i]===-1?layers[0][i]:layers[1][i]}
+function closest(hex,list){var c=rgb(hex),best=0,bestDist=Infinity;list.forEach(function(v,i){var x=rgb(v),dist=0;for(var k=0;k<3;k++)dist+=(c[k]-x[k])*(c[k]-x[k]);if(dist<bestDist){bestDist=dist;best=i}});return best}
+function changeDepth(next){var old=pal();var keep=layers.map(function(layer){return layer.map(function(i){return i<0?-1:old[i]})});depth=next;layers=keep.map(function(layer){return layer.map(function(x){return x===-1?-1:closest(x,pal())})});selected=Math.min(selected,pal().length-1);render()}
+function example(){layers=[Array(SIZE).fill(0),Array(SIZE).fill(-1)];var put=function(x,y,c,layer){if(x>=0&&x<12&&y>=0&&y<12)layers[layer===undefined?1:layer][y*12+x]=c};
+if(depth===1){
+ // High-contrast two-colour smiley
+ for(var y=1;y<11;y++)for(var x=1;x<11;x++){var dx=x-5.5,dy=y-5.5;if(dx*dx+dy*dy>18&&dx*dx+dy*dy<33)put(x,y,1)}
+ [[3,4],[4,4],[7,4],[8,4],[3,7],[4,8],[5,9],[6,9],[7,8],[8,7]].forEach(function(p){put(p[0],p[1],1)});
+}else if(depth===4){
+ // Sixteen-colour landscape: sky, sun, mountains, trees and field.
+ for(var y4=0;y4<12;y4++)for(var x4=0;x4<12;x4++)put(x4,y4,y4<6?4:y4<8?3:12,0);
+ for(var sy=1;sy<5;sy++)for(var sx=8;sx<11;sx++)if((sx-9)*(sx-9)+(sy-2)*(sy-2)<=3)put(sx,sy,6);
+ for(var yy=5;yy<10;yy++)for(var xx=0;xx<12;xx++){if(yy>=8-Math.abs(xx-3))put(xx,yy,2);if(yy>=9-Math.abs(xx-8))put(xx,yy,10)}
+ for(var tx=0;tx<12;tx++)for(var ty=9;ty<12;ty++)put(tx,ty,ty===9?11:12);
+ for(var t=0;t<3;t++){var bx=2+t*4;put(bx,10,13);put(bx,9,13);put(bx,8,11);put(bx-1,9,11);put(bx+1,9,11)}
+}else{
+ // 256-colour gradient and vivid indexed-colour artwork.
+ var p=pal();
+ for(var y8=0;y8<12;y8++)for(var x8=0;x8<12;x8++){
+   var sky=toHex([Math.round(30+y8*17),Math.round(57+y8*11),Math.round(165-y8*8)]);
+   put(x8,y8,closest(sky,p),0);
+ }
+ var yellow=closest('#ffff33',p),orange=closest('#ff9900',p),sea=closest('#0055bb',p),shore=closest('#33aa88',p);
+ for(var ysun=1;ysun<6;ysun++)for(var xsun=7;xsun<12;xsun++)if((xsun-9)*(xsun-9)+(ysun-3)*(ysun-3)<=5)put(xsun,ysun,ysun<3?yellow:orange);
+ for(var ys=8;ys<12;ys++)for(var xs=0;xs<12;xs++)put(xs,ys,ys===8?shore:sea);
+ for(var yboat=6;yboat<=9;yboat++)put(4,yboat,closest('#523420',p));
+ for(var yyb=5;yyb<=8;yyb++)for(var xxb=5;xxb<=7;xxb++)if(xxb-5<=8-yyb)put(xxb,yyb,closest('#fff5cc',p));
+ for(var xb=2;xb<8;xb++)put(xb,9,closest('#593324',p));
+}
+selected=Math.min(depth===1?1:depth===4?8:closest('#ffcc00',pal()),pal().length-1);
+render()}
+function renderPalette(){var wrap=$('palette');wrap.textContent='';pal().forEach(function(hex,i){var b=document.createElement('button');b.type='button';b.className='swatch'+(selected===i?' selected':'');b.style.background=hex;b.title='Colour '+i+' ('+hex+')';b.setAttribute('aria-label','Palette colour '+i+', '+hex);b.setAttribute('aria-pressed',String(i===selected));b.addEventListener('click',function(){selected=i;renderPalette()});wrap.appendChild(b)});$('paletteHelp').textContent='Selected colour index: '+selected+' · '+colour(selected)+' · '+depth+'-bit index: '+selected.toString(2).padStart(depth,'0')}
+function paint(i){var layer=Number($('layer').value);layers[layer][i]=$('brush').value==='erase'?(layer===0?0:-1):selected;render()}
+function render(){renderPalette();var grid=$('pixel');grid.textContent='';var visibleIndexes=[];
+for(var i=0;i<SIZE;i++){var idx=visible(i);visibleIndexes.push(idx);var b=document.createElement('button');b.type='button';b.className='pixel-cell';b.style.background=colour(idx);b.setAttribute('aria-label','Row '+(Math.floor(i/N)+1)+', column '+(i%N+1)+', colour index '+idx);b.addEventListener('click',(function(n){return function(){paint(n)}})(i));grid.appendChild(b)}
+var textRows=[];for(var row=0;row<N;row++){var data=visibleIndexes.slice(row*N,row*N+N);textRows.push(data.map(function(v){return v.toString(2).padStart(depth,'0')}).join(' '))}
+$('binary').textContent=textRows.join('\n');
+var bits=SIZE*depth,bytes=bits/8,used=new Set(visibleIndexes).size;
+$('stats').textContent=bits+' bits · '+bytes+' bytes of uncompressed pixel data';
+$('formula').textContent='12 × 12 pixels × '+depth+' bit'+(depth===1?'':'s')+' per pixel = '+bits+' bits ÷ 8 = '+bytes+' bytes.';
+$('range').textContent='Available colours: '+pal().length+' (2^'+depth+'). Colours currently used: '+used+'.';
+$('depthExplanation').textContent=depth===1?'1 bit per pixel: each pixel stores a 0 or 1, so there are 2 possible colours.':depth===4?'4 bits per pixel: each pixel stores a value from 0000 to 1111, giving 16 possible colours.':'8 bits per pixel: each pixel stores a value from 00000000 to 11111111, giving 256 possible palette colours.';
+$('encodingHelp').textContent='Each group is one pixel, represented using exactly '+depth+' binary digit'+(depth===1?'':'s')+'. Each row contains 12 pixels.';
+$('example').textContent='Load '+depth+'-bit example';
+var c=$('preview'),ctx=c.getContext('2d'),image=ctx.createImageData(N,N);
+visibleIndexes.forEach(function(idx,i){var rgbv=rgb(colour(idx));image.data[i*4]=rgbv[0];image.data[i*4+1]=rgbv[1];image.data[i*4+2]=rgbv[2];image.data[i*4+3]=255});ctx.putImageData(image,0,0);
+var mag=Number($('scale').value);c.style.width=(12*mag*4)+'px';c.style.height=(12*mag*4)+'px'}
+$('depth').addEventListener('change',function(){changeDepth(Number(this.value))});
+$('scale').addEventListener('change',render);
+$('example').addEventListener('click',example);
+$('clear').addEventListener('click',function(){var layer=Number($('layer').value);layers[layer].fill(layer===0?0:-1);render()});
+example();
+})();
+</script></body></html>
