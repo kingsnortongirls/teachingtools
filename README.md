@@ -23,7 +23,9 @@ teachingtools/
 ├── binary-game/index.html     # Binary Blitz, five-level conversion game
 ├── flowcharts/index.html      # Algorithm / flowchart builder
 ├── command-line/index.html    # Simulated file-management terminal
-├── networks/index.html        # Network designer
+├── networks/index.html        # Network Designer & Simulator
+├── networks/designer.css      # Responsive full-screen designer layout
+├── networks/designer.js       # Graph editor, routing, diagnostics and project tools
 ├── pixel-editor/index.html    # Pixel art and image layers
 ├── cpu/index.html             # Fetch–decode–execute
 ├── sorting/index.html         # Sorting and searching visualiser
@@ -35,6 +37,19 @@ teachingtools/
 ├── packets/index.html        # Conceptual packet routing
 └── complexity/index.html     # Big O growth explorer
 ```
+
+
+## Network Designer & Simulator
+
+Student tool: https://kingsnortongirls.github.io/teachingtools/networks/
+
+- **Flowchart-style workspace:** responsive three-column editor with device palette, central draggable SVG canvas and properties inspector. Expand to full screen, zoom and fit the design.
+- **Design and edit:** add computers, laptops, servers, switches, routers, access points, printers, firewalls, NAS units, phones, tablets and a WAN/cloud symbol. Drag devices, draw Ethernet/fibre/wireless connections, rename devices and edit IPv4/VLAN labels, link latency and link capacity. Mark devices offline or links failed.
+- **Network experiments:** choose school LAN, star, ring, mesh, redundant path or two-site examples; see a simplified topology estimate, connected component counts and warnings about disconnected nodes and duplicate IPv4 annotations.
+- **Packet tracer:** select endpoints and compare fewest-hop routing with shortest link-latency routing. Step or play a simulated packet path with a hop limit and a delivery/dropped status.
+- **Project tools:** undo/redo, automatic browser-local recovery, Save/Load, JSON export/import, SVG export, A4 landscape print, and keyboard support for selecting devices and deleting items.
+
+**Teaching accuracy:** The route finding is based on a weighted graph of active devices and links. IPv4/VLAN fields are annotations; the simulator does **not** emulate real Ethernet switching, routing tables, firewall rules, wireless propagation, real packet timings or IP subnet enforcement. It is designed for modelling topology and explaining routing concepts, not for analysing a production network.
 
 ## Design principles
 
