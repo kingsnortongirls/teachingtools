@@ -58,7 +58,7 @@ let challenges=[],active=0,step=0,checked=false,scores={};
 try{scores=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){scores={}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(scores))}catch(e){}}
 function esc(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function py(x){if(typeof x==='boolean')return x?'True':'False';if(Array.isArray(x))return '['+x.map(py).join(', ')+']';return String(x)}
+function py(x){if(typeof x==='boolean')return x?'True':'False';if(Array.isArray(x))return '['+x.map(py).join(', ')+']';if(x&&typeof x==='object')return '{'+Object.entries(x).map(([k,v])=>JSON.stringify(k)+': '+py(v)).join(', ')+'}';return String(x)}
 function make(id){
 const t=Math.floor(id/12),v=id%12,a=2+(v%6),b=3+((v*3)%7),c=1+(v%4);
 let lines=[],steps=[],vars={},printed=[],hint='';
