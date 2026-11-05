@@ -24,7 +24,7 @@ teachingtools/
 ├── pixel-editor/index.html    # Pixel art and image layers
 ├── cpu/index.html             # Fetch–decode–execute
 ├── sorting/index.html         # Sorting and searching visualiser
-├── python-tracing/index.html  # Guided Python tracing
+├── python-tracing/index.html  # 192 step-by-step Python tracing challenges across 16 topics
 ├── logic-gates/index.html     # Logic gates and truth tables
 ├── data-structures/index.html # Stacks, queues, lists, trees, hashing
 ├── databases/index.html      # Safe read-only subset of SQL
@@ -55,3 +55,7 @@ GitHub Pages serves `index.html` at the root and each module from its own direct
 3. Add a card to the root `index.html` with the relevant `data-level` values.
 4. Check the tool on desktop, iPhone and a printed view where appropriate.
 5. Ensure any assessed examples are original and do not reproduce examination questions.
+
+## Python tracing challenge lab
+
+The `python-tracing/` tool contains 192 deterministic, original practice variations across 16 topic families, with KS3, GCSE J277 and A Level H446 filters. Each has a Python listing, an expected output, hints, line-by-line guided states, retryable answer checking and browser-local first-attempt tracking. It is a prepared tracing engine, not a general-purpose Python interpreter. No account or external library is required.
