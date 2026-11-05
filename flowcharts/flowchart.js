@@ -51,7 +51,7 @@ function renderProperties(){
  if(selected?.startsWith('edge:')){const e=byEdge(selected.slice(5));$('properties').innerHTML=e?'<div class="field"><label>Selected arrow</label><div>'+esc(get(e.from)?.label)+' → '+esc(get(e.to)?.label)+'</div></div><button class="btn warn" id="removeEdge">Delete arrow</button>':'<p class="muted">Choose a shape or arrow.</p>';if(e)$('removeEdge').onclick=()=>{data.edges=data.edges.filter(x=>x.id!==e.id);selected=null;draw();saveAuto()};return}
  if(!n){$('properties').innerHTML='<p class="muted">Select a shape to edit its text, move it or delete it.</p>';return}
  $('properties').innerHTML='<div class="field"><label for="nodeType">Shape</label><select id="nodeType">'+nodeTypes.map(t=>'<option value="'+t+'"'+(n.type===t?' selected':'')+'>'+t[0].toUpperCase()+t.slice(1)+'</option>').join('')+'</select></div><div class="field"><label for="nodeLabel">Instruction / label</label><textarea id="nodeLabel" spellcheck="false">'+esc(n.label)+'</textarea></div><p class="muted">Use <strong>INPUT variable</strong> or <strong>PRINT expression</strong> for input/output; processes assign a value with <strong>=</strong>. A decision compares values.</p><div class="row"><button class="btn alt" id="updateNode">Apply</button><button class="btn warn" id="deleteNode">Delete</button></div>';
- $('updateNode').onclick=()=>{let old=n.type,proposed=$('nodeType').value;if(proposed!==old){n.type=proposed;data.edges=data.edges.filter(e=>e.from!==n.id||proposed==='decision'?e.from!==n.id||['yes','no'].includes(e.branch):e.from!==n.id||e.branch==='next');if(proposed==='end')data.edges=data.edges.filter(e=>e.from!==n.id)}n.label=$('nodeLabel').value.trim()||defaults[n.type];draw();saveAuto();message('Shape updated.')};
+ $('updateNode').onclick=()=>{let old=n.type,proposed=$('nodeType').value;if(proposed!==old){n.type=proposed;data.edges=data.edges.filter(e=>e.from!==n.id||(proposed==='decision'?['yes','no'].includes(e.branch):proposed!=='end'&&e.branch==='next'));if(proposed==='end')data.edges=data.edges.filter(e=>e.from!==n.id)}n.label=$('nodeLabel').value.trim()||defaults[n.type];draw();saveAuto();message('Shape updated.')};
  $('deleteNode').onclick=()=>{data.nodes=data.nodes.filter(x=>x.id!==n.id);data.edges=data.edges.filter(e=>e.from!==n.id&&e.to!==n.id);selected=null;draw();saveAuto();message('Shape deleted. Check remaining connections.')};
 }
 function selectNode(id){selected=id;draw()}
@@ -124,7 +124,8 @@ async function advance(single=false){
  if(n.type==='end'){finish('Finished successfully in '+steps+' steps.');return}
  const e=data.edges.find(e=>e.from===n.id&&e.branch===result.branch);
  if(!e)throw Error('No '+result.branch+' arrow from '+n.label);
- previousEdge=e.id;draw();await animateEdge(e);
+ previousEdge=e.id;draw();const animationEpoch=epoch;await animateEdge(e);
+ if(animationEpoch!==epoch)return;
  active=e.to;draw();status(single?'Paused after step '+steps:'Running step '+steps);
  }catch(ex){finish('Stopped: '+ex.message);message(ex.message,true)}
 }
