@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102d59"><meta name="description" content="KNGS Binary Blitz: an interactive binary to denary and denary to binary conversion game with five levels."><title>KNGS | Binary Blitz</title><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<style>
+:root{--navy:#102d59;--blue:#195e9e;--ink:#182e4a;--bg:#eef4fb;--muted:#506681;--line:#d3e0ef;--green:#16785c;--orange:#bf7520}
+*{box-sizing:border-box}body{font:16px/1.5 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink);margin:0}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #f2b938;outline-offset:3px}
+.wrap{width:min(1100px,calc(100% - 30px));margin:auto}.hero{padding:22px 0 72px;background:linear-gradient(125deg,#102b52,#1761a5);color:#fff}.hero .brand{font-size:.72rem;font-weight:850;letter-spacing:.12em;color:#d5e9fc}.hero h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.1;letter-spacing:-.045em;margin:18px 0 8px}.hero h1 span{color:#a9d9ff}.hero p{color:#d6e9fb;max-width:700px;margin:0}.shell{margin-top:-44px;position:relative;padding-bottom:45px}.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(14px,3vw,27px);box-shadow:0 7px 25px #16395910}.top{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-bottom:15px}.back{color:#155990;font-size:.85rem;font-weight:750;text-decoration:none}.tag{display:inline-block;border-radius:60px;background:#e6f2ff;color:#1f578a;font-size:.73rem;padding:5px 10px;font-weight:800}
+h2{font-size:1.4rem;letter-spacing:-.025em;margin:0 0 9px}h3{font-size:1rem;margin:12px 0 8px}.muted{color:var(--muted);font-size:.88rem}
+.setup{display:flex;flex-wrap:wrap;gap:12px;align-items:end}.setup label{display:grid;gap:5px;font-size:.85rem;font-weight:750;flex:1 1 170px}.setup select{width:100%;padding:10px;border:1px solid #b7cade;border-radius:10px;background:white;color:var(--ink)}
+.btn{border:1px solid var(--blue);background:var(--blue);color:#fff;padding:10px 16px;border-radius:10px;font-weight:800}.btn.alt{background:#e9f3ff;color:#15558f;border-color:#c7daef}.btn.warn{background:#fff4e6;border-color:#e9c498;color:#8b561f}.btn:hover:not(:disabled){filter:brightness(.94)}.buttonrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:17px}.stat{background:#edf5ff;border:1px solid #d5e6f5;border-radius:12px;padding:10px;text-align:center}.stat span{display:block;color:var(--muted);font-size:.73rem;font-weight:750}.stat strong{font-size:1.5rem;font-variant-numeric:tabular-nums}
+.levelbar{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:18px 0 10px}.levelcell{height:9px;border-radius:99px;background:#dbe8f5}.levelcell.complete{background:#2a9676}.levelcell.current{background:#266faf}.levelnote{font-size:.85rem;color:var(--muted)}
+.game{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(275px,.65fr);gap:17px;margin-top:16px}.board{border:1px solid #cbdcec;border-radius:15px;padding:18px;min-width:0;background:#f8fbff}.side{border:1px solid #d6e2ef;border-radius:15px;padding:16px;background:#fff}
+.question-type{font-size:.8rem;font-weight:850;letter-spacing:.04em;text-transform:uppercase;color:#2869a1}.challenge{font-size:clamp(1.15rem,2vw,1.6rem);font-weight:800;margin:9px 0 14px}
+.numbercard{font-size:clamp(1.7rem,5vw,3.2rem);font-weight:900;letter-spacing:.08em;text-align:center;border:1px solid #bed5eb;border-radius:13px;padding:12px;background:white;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.bits{display:grid;grid-template-columns:repeat(var(--bits),minmax(0,1fr));gap:5px;margin:13px 0}.bitcol{text-align:center;min-width:0}.weight{font-size:clamp(.7rem,1.9vw,.95rem);color:#506984;font-weight:800;margin-bottom:7px}.bit{display:grid;place-items:center;width:100%;min-height:60px;border:2px solid #9fbcdc;background:#e9f4ff;color:#15538d;border-radius:9px;font:900 clamp(1.12rem,2.9vw,1.8rem)/1 ui-monospace,Consolas,monospace;padding:5px}.bit[aria-pressed=true]{background:#176ba8;color:#fff;border-color:#105688}.bit:disabled{opacity:1;cursor:default}.bit:not(:disabled):hover{background:#c7e1fc}.bit[aria-pressed=true]:not(:disabled):hover{background:#105a90}.inputrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.inputrow input{font-size:1.5rem;font-weight:800;max-width:100%;width:200px;border:2px solid #a3c0db;border-radius:9px;padding:9px 12px;color:var(--ink)}
+.answerhint{min-height:22px;color:var(--muted);font-size:.85rem;margin-top:8px}.message{border:1px solid #cadbec;background:#eaf4ff;padding:13px;border-radius:10px;margin:14px 0;white-space:pre-wrap;font-weight:650;min-height:52px}.message.good{background:#e8f7ef;border-color:#94d0ab;color:#17623f}.message.bad{background:#fff2e4;border-color:#ebc38d;color:#784718}
+.legend{font-size:.82rem;color:var(--muted)}.helpbox{background:#eff6ff;border:1px solid #d2e4f6;border-radius:10px;padding:12px;font-size:.89rem;margin:12px 0}.helpbox[hidden]{display:none}.record{margin-top:18px;font-size:.83rem;color:#526a84}
+#finishScreen{padding:20px;background:#edf7fb;border:1px solid #c7dded;border-radius:12px;margin-top:13px}#finishScreen[hidden],#playArea[hidden]{display:none}
+@media(max-width:800px){.game{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.board{padding:12px}.bit{min-height:52px}.weight{font-size:.75rem}}
+@media(max-width:420px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.bits{gap:3px}.bit{min-height:49px;border-radius:6px}.numbercard{letter-spacing:.025em}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style></head>
+<body><header class="hero"><div class="wrap"><div class="brand">KINGS NORTON GIRLS' SCHOOL · COMPUTER SCIENCE</div><h1>Binary <span>Blitz</span></h1><p>Quick-fire binary conversion challenges. Flip the bits, beat your score and work your way from beginner to binary master.</p></div></header>
+<main class="wrap shell"><div class="panel"><div class="top"><a class="back" href="../">← All Teaching Tools</a><span class="tag">KS3 · GCSE J277 · A Level H446</span></div>
+<h2>Choose your game</h2><div class="setup"><label>Conversion direction<select id="direction"><option value="mixed">Mixed conversions</option><option value="b2d">Binary → denary</option><option value="d2b">Denary → binary</option></select></label>
+<label>Game mode<select id="mode"><option value="practice">Practice, no timer</option><option value="arcade">Arcade, 90-second rounds</option></select></label>
+<label>Starting level<select id="startLevel"><option value="1">Level 1 · 4-bit foundations</option><option value="2">Level 2 · 5-bit numbers</option><option value="3">Level 3 · 6-bit confidence</option><option value="4">Level 4 · 7-bit challenge</option><option value="5">Level 5 · 8-bit mastery</option></select></label>
+<button class="btn" id="start">Start game</button></div>
+<div class="stats" aria-label="Game statistics"><div class="stat"><span>Score</span><strong id="score">0</strong></div><div class="stat"><span>Level</span><strong id="level">1</strong></div><div class="stat"><span>Streak</span><strong id="streak">0</strong></div><div class="stat"><span>Correct</span><strong id="correct">0</strong></div><div class="stat"><span id="timeLabel">Time</span><strong id="time">∞</strong></div></div>
+<div class="levelbar" id="levelBar" aria-label="Level progression"></div><div id="levelInfo" class="levelnote">Answer eight questions correctly to complete a level. A wrong answer ends your streak, not your game.</div>
+<div id="playArea" hidden><div class="game"><section class="board"><div class="top"><span class="question-type" id="qType"></span><span class="tag" id="qCount">Question 1</span></div>
+<div class="challenge" id="prompt"></div><div class="numbercard" id="sourceNumber"></div>
+<div id="binaryPanel" hidden><p class="muted" id="binaryLabel">Tap each bit to turn it on or off. Column values double as you move left.</p><div id="bits" class="bits" role="group" aria-label="Binary answer switches"></div><p class="legend">Press individual bits or use keys 1–8 when appropriate. Leftmost column has the highest value.</p></div>
+<div id="decimalPanel" hidden><p class="muted"><label for="decimal">Your denary answer</label></p><div class="inputrow"><input id="decimal" type="number" inputmode="numeric" min="0" max="255" step="1" placeholder="Type a number" autocomplete="off"></div></div>
+<div class="buttonrow"><button class="btn" id="submit">Check answer ↵</button><button class="btn alt" id="next" hidden>Next question →</button><button class="btn alt" id="hint">Hint</button><button class="btn alt" id="skip">Skip question</button></div>
+<div id="feedback" class="message" role="status" aria-live="polite">Make your conversion, then press Check answer.</div></section>
+<aside class="side"><h3>How the levels work</h3><p class="muted">You start with four binary columns and progress to eight. Complete eight correct answers per level to move up. You can also start directly at a higher level.</p>
+<h3>Binary place values</h3><div class="helpbox"><strong>128 · 64 · 32 · 16 · 8 · 4 · 2 · 1</strong><p class="muted" style="margin-bottom:0">Add the place values wherever there is a 1. For denary to binary, switch on the values needed to make the target number.</p></div>
+<div class="helpbox" id="working" hidden></div>
+<h3>Points</h3><p class="muted">10 points per correct answer, plus a streak bonus of up to 10. Earn 20 extra points for completing each level. Hints are free in practice, but reduce the question's points in arcade mode.</p>
+<div class="buttonrow"><button class="btn alt" id="restart">New game</button></div>
+<p class="record" id="record">Personal best: 0</p></aside></div></div>
+<div id="finishScreen" hidden><h2 id="endTitle">Round complete!</h2><p id="endMessage"></p><button class="btn" id="again">Play again</button></div>
+<div class="record">This is an original educational game inspired by fast-paced binary practice. It is not affiliated with Cisco. No accounts, adverts, external libraries or student data collection. Personal best saved on this browser only.</div>
+</div></main>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id),bestKey='kngs-binary-blitz-best-v1';
+const levelBits=[4,5,6,7,8];
+let playing=false,level=1,levelCorrect=0,score=0,streak=0,correct=0,questionNo=0,seconds=90,timer=null,lastValue=-1,question=null,answered=false,usedHint=false,selected=[],best=0;
+try{best=Number(localStorage.getItem(bestKey))||0}catch(e){}
+function saveBest(){if(score>best){best=score;try{localStorage.setItem(bestKey,String(best))}catch(e){}}$('record').textContent='Personal best: '+best}
+function set(id,value){$(id).textContent=String(value)}
+function rnd(n){return Math.floor(Math.random()*n)}
+function makeQuestion(){
+const count=levelBits[level-1],max=(1<<count)-1;
+let n;do{n=rnd(max)+1}while(n===lastValue&&max>1);lastValue=n;
+const dir=$('direction').value,conversion=dir==='mixed'?(questionNo%2===1?'d2b':'b2d'):dir;
+return {number:n,bits:count,conversion,answerBinary:n.toString(2).padStart(count,'0')};
+}
+function progress(){
+$('levelBar').innerHTML=levelBits.map((_,i)=>'<div class="levelcell '+(i<level-1?'complete':i===level-1?'current':'')+'"></div>').join('');
+set('score',score);set('level',level);set('streak',streak);set('correct',correct);set('time',$('mode').value==='arcade'?Math.max(0,seconds)+'s':'∞');
+set('levelInfo','Level '+level+' of 5 · '+levelBits[level-1]+'-bit numbers · '+levelCorrect+'/8 correct to reach '+(level===5?'binary mastery':'the next level')+'.');saveBest();
+}
+function makeBits(){selected=Array(question.bits).fill(0);$('bits').style.setProperty('--bits',question.bits);
+$('bits').innerHTML=Array.from({length:question.bits},(_,i)=>'<div class="bitcol"><div class="weight">'+(1<<(question.bits-i-1))+'</div><button type="button" class="bit" data-index="'+i+'" aria-pressed="false" aria-label="Bit worth '+(1<<(question.bits-i-1))+', off">0</button></div>').join('');
+$('bits').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>toggleBit(Number(b.dataset.index))));
+}
+function toggleBit(i){if(!playing||answered||question.conversion!=='d2b')return;
+selected[i]=1-selected[i];const b=$('bits').querySelector('[data-index="'+i+'"]');b.textContent=selected[i];b.setAttribute('aria-pressed',String(Boolean(selected[i])));b.setAttribute('aria-label','Bit worth '+(1<<(question.bits-i-1))+', '+(selected[i]?'on':'off'))}
+function newQuestion(){if(!playing)return;questionNo++;answered=false;usedHint=false;question=makeQuestion();
+set('qCount','Question '+questionNo);set('qType',question.conversion==='b2d'?'Binary → denary':'Denary → binary');
+set('prompt',question.conversion==='b2d'?'Convert this binary number into denary.':'Build the binary number using the switches below.');
+set('sourceNumber',question.conversion==='b2d'?question.answerBinary:question.number);
+$('binaryPanel').hidden=question.conversion!=='d2b';$('decimalPanel').hidden=question.conversion!=='b2d';
+$('next').hidden=true;$('submit').hidden=false;$('hint').disabled=false;$('working').hidden=true;
+$('feedback').className='message';set('feedback','Make your conversion, then press Check answer.');
+if(question.conversion==='d2b')makeBits();else{$('decimal').value='';$('decimal').focus()}
+progress();
+}
+function explain(){const arr=Array.from({length:question.bits},(_,i)=>1<<(question.bits-i-1));const active=arr.filter(x=>question.number&x);
+return question.answerBinary+'₂ = '+(active.length?active.join(' + '):'0')+' = '+question.number+'₁₀.'}
+function check(){
+if(!playing||answered)return;
+let guess;
+if(question.conversion==='d2b')guess=selected.join('');
+else{const v=$('decimal').value.trim();if(!/^\d+$/.test(v)){set('feedback','Enter a whole denary number before checking.');return}guess=Number(v);if(!Number.isSafeInteger(guess)){set('feedback','Enter a valid whole number.');return}}
+const good=question.conversion==='d2b'?guess===question.answerBinary:guess===question.number;
+answered=true;$('submit').hidden=true;$('next').hidden=false;$('hint').disabled=true;
+$('bits').querySelectorAll('button').forEach(b=>b.disabled=true);
+if(good){correct++;streak++;levelCorrect++;const gained=(usedHint&&$('mode').value==='arcade'?5:10)+Math.min(10,Math.max(0,streak-1));score+=gained;
+$('feedback').className='message good';set('feedback','Correct! +'+gained+' points. '+explain());
+if(levelCorrect>=8){levelCorrect=0;score+=20;if(level===5){progress();end('Binary master!','You completed all five levels! Final score: '+score+'.');return}else{level++;set('feedback','Level complete! +20 bonus points. Next up: Level '+level+', '+levelBits[level-1]+' bits. '+explain())}}}
+else{streak=0;$('feedback').className='message bad';set('feedback','Not quite. The correct answer is '+(question.conversion==='d2b'?question.answerBinary:question.number)+'. '+explain())}
+$('working').hidden=false;set('working',explain());progress();$('next').focus();
+}
+function hint(){if(!playing||answered)return;usedHint=true;$('working').hidden=false;
+const highest=1<<(question.bits-1);
+set('working',question.conversion==='b2d'?'Each 1 means its column value is included. Start at '+highest+' on the left and add only the columns containing 1.':'Start with the largest place value no greater than '+question.number+', then subtract it. Repeat until the remainder is zero.');
+}
+function skip(){if(!playing)return;streak=0;newQuestion()}
+function end(title,body){playing=false;clearInterval(timer);timer=null;$('playArea').hidden=true;$('finishScreen').hidden=false;set('endTitle',title);set('endMessage',body);progress()}
+function start(){
+clearInterval(timer);timer=null;
+level=Number($('startLevel').value);levelCorrect=0;score=0;streak=0;correct=0;questionNo=0;seconds=90;lastValue=-1;playing=true;
+$('playArea').hidden=false;$('finishScreen').hidden=true;
+$('direction').disabled=true;$('mode').disabled=true;$('startLevel').disabled=true;
+$('start').textContent='Start again';newQuestion();
+if($('mode').value==='arcade'){timer=setInterval(()=>{if(!playing)return;seconds--;progress();if(seconds<=0)end('Time is up!','You scored '+score+' points and converted '+correct+' numbers correctly. Try again to beat your best.')},1000)}
+}
+function release(){clearInterval(timer);timer=null;playing=false;$('direction').disabled=false;$('mode').disabled=false;$('startLevel').disabled=false;$('start').textContent='Start game';$('playArea').hidden=true;$('finishScreen').hidden=true;progress()}
+$('start').addEventListener('click',start);$('submit').addEventListener('click',check);
+$('next').addEventListener('click',newQuestion);$('hint').addEventListener('click',hint);$('skip').addEventListener('click',skip);
+$('restart').addEventListener('click',release);$('again').addEventListener('click',()=>{release();start()});
+$('decimal').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(!answered)check();else newQuestion()}});
+document.addEventListener('keydown',e=>{if(!playing||answered||question.conversion!=='d2b'||e.altKey||e.ctrlKey||e.metaKey||['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))return;
+if(e.key>='1'&&e.key<=String(question.bits)){toggleBit(Number(e.key)-1)}else if(e.key==='Enter'){e.preventDefault();check()}});
+saveBest();progress();
+})();
+</script></body></html>
