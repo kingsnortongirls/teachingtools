@@ -61,7 +61,7 @@ a{color:inherit}p{margin:7px 0}
 #diagram .device:active{cursor:grabbing}
 #diagram .device text{pointer-events:none}
 #diagram .link-hit{cursor:pointer;pointer-events:stroke}
-#diagram .link-hit:hover + .link-visual{stroke:#e5a13c}
+#diagram g:has(> .link-hit:hover) > .link-visual{stroke:#e5a13c;stroke-width:5}
 #diagram .device:hover .device-frame{stroke:#1186bc}
 .canvasfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);background:#f1f7fd;color:#375b7d;padding:9px 13px;font-size:.77rem}
 .pill{border-radius:50px;border:1px solid #c4d8e9;background:#eaf3fb;padding:4px 9px;color:#215782;font-size:.74rem;font-weight:850}
@@ -89,7 +89,7 @@ body.edit-full{overflow:hidden}
 .studio.expanded .layout,.studio:fullscreen .layout{flex:1;min-height:0;align-items:stretch}
 .studio.expanded .panel,.studio:fullscreen .panel{min-height:0}
 .studio.expanded .left,.studio.expanded .right,.studio:fullscreen .left,.studio:fullscreen .right{overflow-y:auto;max-height:calc(100dvh - 125px)}
-.studio.expanded .viewport,.studio:fullscreen .viewport{height:100%;min-height:420px}
+.studio.expanded .viewport,.studio:fullscreen .viewport{height:calc(100% - 93px);min-height:420px}
 @media(min-width:1400px){.layout{grid-template-columns:235px minmax(0,1fr) 303px}}
 @media(max-width:1080px){.layout{grid-template-columns:1fr 265px}.left{grid-column:1/-1}.palette{grid-template-columns:repeat(6,minmax(0,1fr))}.device-btn{flex-direction:column;text-align:center;padding:8px 3px;font-size:.71rem}.device-btn .glyph{font-size:1.4rem}.left .sectionline{display:none}.left .helper{margin-top:8px}.viewport{min-height:450px}}
 @media(max-width:730px){.layout{grid-template-columns:1fr}.left{grid-column:auto}.right{grid-column:auto}.palette{grid-template-columns:repeat(3,minmax(0,1fr))}.viewport{height:58vh;min-height:370px}.toolbar{gap:5px}.toolbar .divider{display:none}.toolbar .btn{padding:7px 9px}.studio.expanded .layout,.studio:fullscreen .layout{display:flex;flex-direction:column}.studio.expanded .left,.studio:fullscreen .left{max-height:155px}.studio.expanded .right,.studio:fullscreen .right{max-height:200px}.studio.expanded .viewport,.studio:fullscreen .viewport{height:55vh;min-height:340px}.studio.expanded .canvasPanel,.studio:fullscreen .canvasPanel{flex:none}}
