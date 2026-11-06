@@ -101,3 +101,24 @@ Six original linked challenges for Year 7 to Year 9, designed for a 30-minute te
 The game has two optional graduated hints per room, progress and timer, point deductions for hints and incorrect submissions, local-only progress, team-name option, mobile/keyboard-friendly controls and a printable completion certificate. No packages, login, remote storage, assets or third-party services.
 
 **Classroom use:** work in pairs or threes with paper for workings. The 30-minute clock does not lock students out when it expires. The teacher guide supplies solutions, timings, SEND scaffolds and greater-depth extensions. As the game is a static site, answers can be inspected in page source; use for learning and enrichment rather than secure assessment.
+
+
+## Eight curriculum practical labs (November 2026)
+
+These browser-based activities were created for the current KNGS Computer Science revision curriculum. They use the shared styles in `assets/lab-suite.css` and shared local-browser helpers in `assets/lab-suite.js`.
+
+| Tool | Curriculum | Features |
+|---|---|---|
+| [Spreadsheet Challenge Lab](spreadsheet-lab/) | Year 7 Unit 8 | Editable sheet, formula bar, safe arithmetic and SUM/AVERAGE/MAX/MIN/COUNT, 8 auto-marked missions, 3 datasets, chart and CSV export |
+| [Cipher Quest](cipher-quest/) | Year 7 Unit 6 | Caesar shifts, PigPen SVG symbols and key, three challenge levels, automatic checking |
+| [Cyber Safety Detective](cyber-detective/) | Year 7/8 e-safety, GCSE 1.4 | Twelve fictional evidence investigations, multi-select clue marking, incident responses and print record |
+| [Computer Builder & Memory Lab](computer-builder/) | Year 9 Unit 1, GCSE 1.1–1.2 | Fictional PC components and budgets, compatibility, RAM/ROM/cache/SSD simulation, 7 checks |
+| [Debugging Detective](debugging-detective/) | Year 9 Python, GCSE 2.3.2 | Fifteen code investigations, fault-type classification, safe accepted-repair checks, reports |
+| [Digital Data Studio](digital-data/) | GCSE 1.2, Year 9 image editing | Original synthesised Web Audio tones, sample rate and bit depth, real playback, waveform canvas, bitmap editor, file-size calculations |
+| [Data Detective: John Snow](data-detective/) | Year 7 computational thinking | Explicitly synthetic 1854-inspired cholera case map, density and distance analysis, evidence questions and CSV |
+| [UML & OOP Builder](uml-oop/) | OCR A Level H446 | Editable draggable UML class diagrams, attributes/methods, inheritance, associations, Python starter-code generation, SVG/JSON exports |
+
+**Learning and privacy:** No sign-in or back-end is needed. Scores and draft work are saved using localStorage on the current browser where applicable, and do not synchronise between devices. Sound requires a direct click and Web Audio support.
+
+**Assessment limitations:** Debugging Detective checks recognised repairs rather than executing arbitrary Python; UML-generated code is starter scaffolding; the computer builder's prices are deliberately illustrative, not shopping quotes; and the John Snow map contains synthetic data, not historical individual records. These activities are suitable for formative learning, not secure examination.
+
