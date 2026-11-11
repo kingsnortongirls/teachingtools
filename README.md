@@ -1,6 +1,6 @@
 # KNGS Computer Science | Teaching Tools
 
-A collection of 16 browser-based Computer Science learning labs for KS3, GCSE OCR J277 and A Level OCR H446.
+A collection of 33 browser-based Computer Science learning labs for KS3, GCSE OCR J277 and A Level OCR H446.
 
 ## Student website
 
@@ -122,3 +122,21 @@ These browser-based activities were created for the current KNGS Computer Scienc
 
 **Assessment limitations:** Debugging Detective checks recognised repairs rather than executing arbitrary Python; UML-generated code is starter scaffolding; the computer builder's prices are deliberately illustrative, not shopping quotes; and the John Snow map contains synthetic data, not historical individual records. These activities are suitable for formative learning, not secure examination.
 
+
+
+## November 2026 interactive lab expansion
+
+Eight additional standalone browser activities have been added to the searchable homepage:
+
+| Activity | Curriculum | Scope |
+| --- | --- | --- |
+| Little Man Computer (`little-man-computer/`) | GCSE J277, A Level H446 | Educational 100-mailbox assembler; step/run CPU, accumulator, program counter, output, instructions and memory |
+| Parsons Problems (`parsons-problems/`) | KS3, GCSE | Six original rearrange-and-check Python exercises; indentation and code-order reasoning |
+| Python Coding Lab (`python-coding-lab/`) | KS3, GCSE | Five guided writing and output prediction activities; structure checks, **not** a general Python interpreter |
+| Web Development Studio (`web-studio/`) | KS3, GCSE enrichment | HTML, CSS, JS editor and sandboxed preview with project prompts and export |
+| Python Turtle Playground (`python-turtle/`) | KS3, GCSE enrichment | Local turtle-style educational **subset** with lines, turns and bounded repeat blocks; not full Python |
+| Algorithm-a-Day (`algorithm-a-day/`) | GCSE, A Level | Local-date-selected original pseudocode questions with hints and explanations |
+| Typing Challenge (`typing-challenge/`) | KS3 | Typing passages, accuracy, time and approximate WPM |
+| Character Encoding Lab (`character-encoding/`) | KS3, GCSE | ASCII questions; Unicode code points and real UTF-8 bytes via TextEncoder |
+
+Existing Big O learning tools (`complexity/`, `sorting/`) and packet simulations (`packets/`, `networks/`) were retained rather than duplicated. All new activities are static browser tools and require no student login. Guided code checks are formative and do not securely validate arbitrary source code. The educational LMC and turtle environments simplify real system behaviour. Browser-based previews and exports should not contain personal data.
