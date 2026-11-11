@@ -4,28 +4,74 @@ function qualify(medal){return medal==='Bronze'||medal==='Silver'||medal==='Gold
 function unlockedCertificate(result,level,passage){if(!qualify(result.medal))return;latestAward={...result,level,passage,earnedDate:new Date()};certificateReady=false;$('reopenCertificate').hidden=false;$('downloadCertificate').disabled=true;$('certificateAchievement').textContent=result.medal+' award · Level '+(level+1)+', Passage '+(passage+1)+' · '+Math.round(result.wpm)+' WPM · '+result.accuracy.toFixed(0)+'% accuracy';$('certificateMessage').textContent='Enter your name, then choose Create my certificate.';drawCertificate('Your name here');if(!certificateDialog.open)certificateDialog.showModal();certificateName.focus()}
 function roundRect(ctx,x,y,w,h,r,fill){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill()}
 function fittedText(ctx,text,maxWidth,initial,min){let size=initial;do{ctx.font='700 '+size+'px Georgia, serif';if(ctx.measureText(text).width<=maxWidth)break;size-=2}while(size>min);return size}
-function drawCertificate(name){if(!latestAward)return;const ctx=certificateCanvas.getContext('2d'),W=1600,H=1130;ctx.clearRect(0,0,W,H);
-const medal=latestAward.medal,metal=medal==='Gold'?'#b58b37':medal==='Silver'?'#8995a4':'#a46a48',light=medal==='Gold'?'#f9edc7':medal==='Silver'?'#eef0f4':'#f3dfcc';
-ctx.fillStyle='#faf8f3';ctx.fillRect(0,0,W,H);
-const grd=ctx.createLinearGradient(0,0,W,H);grd.addColorStop(0,'#112e55');grd.addColorStop(1,'#2565a2');ctx.fillStyle=grd;ctx.fillRect(0,0,W,155);
-ctx.fillStyle='#e8edf6';ctx.textAlign='left';ctx.font='700 31px Arial,sans-serif';ctx.fillText("KINGS NORTON GIRLS' SCHOOL",92,70);ctx.font='500 24px Arial,sans-serif';ctx.fillText('COMPUTER SCIENCE · TEACHING TOOLS',92,111);
-ctx.textAlign='right';ctx.fillStyle='#f5d99e';ctx.font='700 26px Arial,sans-serif';ctx.fillText('KNGS',1505,95);
-ctx.strokeStyle='#c9ad67';ctx.lineWidth=9;ctx.strokeRect(30,30,W-60,H-60);
-ctx.strokeStyle='#e1d4b8';ctx.lineWidth=2;ctx.strokeRect(48,48,W-96,H-96);
-ctx.textAlign='center';ctx.fillStyle='#53647b';ctx.font='700 27px Arial,sans-serif';ctx.fillText('CERTIFICATE OF ACHIEVEMENT',W/2,250);
-ctx.fillStyle='#142e52';ctx.font='700 66px Georgia, serif';ctx.fillText('Typing Challenge',W/2,332);
-ctx.fillStyle='#627086';ctx.font='italic 27px Georgia,serif';ctx.fillText('Presented in recognition of excellent keyboard skills to',W/2,405);
-ctx.fillStyle='#142e52';fittedText(ctx,name,1260,76,32);ctx.fillText(name,W/2,502);
-ctx.strokeStyle=metal;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(380,530);ctx.lineTo(1220,530);ctx.stroke();
-ctx.fillStyle=metal;ctx.beginPath();ctx.arc(W/2,675,104,0,Math.PI*2);ctx.fill();
-ctx.fillStyle=light;ctx.beginPath();ctx.arc(W/2,675,90,0,Math.PI*2);ctx.fill();
-ctx.strokeStyle=metal;ctx.lineWidth=4;ctx.beginPath();ctx.arc(W/2,675,81,0,Math.PI*2);ctx.stroke();
-ctx.fillStyle=metal;ctx.font='700 41px Georgia,serif';ctx.fillText(medal.toUpperCase(),W/2,668);ctx.font='700 22px Arial,sans-serif';ctx.fillText('AWARD',W/2,703);
-ctx.fillStyle='#283f60';ctx.font='700 30px Arial,sans-serif';ctx.fillText('Level '+(latestAward.level+1)+' · '+levels[latestAward.level][0]+' · Passage '+(latestAward.passage+1),W/2,823);
-roundRect(ctx,320,860,960,104,16,'#edf3f8');ctx.fillStyle='#193b64';ctx.font='700 32px Arial,sans-serif';ctx.fillText(Math.round(latestAward.wpm)+' WORDS PER MINUTE',568,923);ctx.fillText(latestAward.accuracy.toFixed(0)+'% ACCURACY',1064,923);
-ctx.fillStyle='#6c7890';ctx.font='23px Arial,sans-serif';ctx.textAlign='left';ctx.fillText('Awarded '+latestAward.earnedDate.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}),100,1017);
-ctx.textAlign='right';ctx.fillText('KNGS COMPUTER SCIENCE · LEARNING BY DOING',1500,1017);
-ctx.textAlign='center';ctx.font='17px Arial,sans-serif';ctx.fillStyle='#69788e';ctx.fillText('Automatically generated from a completed browser-based typing challenge',W/2,1070);
+function drawCertificate(name){
+if(!latestAward)return;
+const ctx=certificateCanvas.getContext('2d'),W=1600,H=1130,cx=800,award=latestAward.medal;
+const palette=award==='Gold'?{dark:'#9b6a15',bright:'#e9b538',pale:'#fff0bf'}:award==='Silver'?{dark:'#66778a',bright:'#b7c5d6',pale:'#f1f6fb'}:{dark:'#91522d',bright:'#d28b55',pale:'#f8e2cd'};
+const navy='#102d59',blue='#2369a7',cream='#fffaf1',ink='#143456',gold='#d8a733',red='#af3657';
+ctx.clearRect(0,0,W,H);ctx.textBaseline='alphabetic';ctx.save();
+ctx.fillStyle=cream;ctx.fillRect(0,0,W,H);
+function fillPath(points,colour){ctx.beginPath();ctx.moveTo(points[0][0],points[0][1]);for(let i=1;i<points.length;i++)ctx.lineTo(points[i][0],points[i][1]);ctx.closePath();ctx.fillStyle=colour;ctx.fill()}
+function circle(x,y,r,colour){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=colour;ctx.fill()}
+function line(x1,y1,x2,y2,colour,width=2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=colour;ctx.lineWidth=width;ctx.stroke()}
+function centered(t,y,font,colour,max=1300){ctx.textAlign='center';ctx.fillStyle=colour;ctx.font=font;ctx.fillText(t,cx,y,max)}
+function serifFit(t,limit=1170){let size=76;while(size>32){ctx.font='700 '+size+'px Georgia,serif';if(ctx.measureText(t).width<=limit)break;size-=2}return size}
+function laurel(side,baseX,baseY,radius,count,colour){
+ctx.strokeStyle=colour;ctx.lineWidth=4;ctx.beginPath();
+for(let i=0;i<=36;i++){const theta=(-72+i*4)*Math.PI/180;let x=baseX+side*radius*Math.cos(theta),y=baseY+radius*Math.sin(theta);if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.stroke();
+for(let i=0;i<count;i++){let theta=(-67+i*128/(count-1))*Math.PI/180,x=baseX+side*radius*Math.cos(theta),y=baseY+radius*Math.sin(theta);ctx.save();ctx.translate(x,y);ctx.rotate(theta+(side===1?0:Math.PI));ctx.beginPath();ctx.ellipse(0,-12,7,20,Math.PI/5,0,Math.PI*2);ctx.fillStyle=colour;ctx.fill();ctx.restore()}}
+function star(x,y,r,colour){const p=[];for(let i=0;i<10;i++){let a=-Math.PI/2+i*Math.PI/5,rad=i%2?r*.43:r;p.push([x+Math.cos(a)*rad,y+Math.sin(a)*rad])}fillPath(p,colour)}
+// Decorative waves are deliberately behind all lettering.
+ctx.fillStyle='#e6f1f9';ctx.beginPath();ctx.moveTo(0,385);ctx.bezierCurveTo(180,405,130,555,0,555);ctx.closePath();ctx.fill();
+ctx.fillStyle='#d6eaf7';ctx.beginPath();ctx.moveTo(W,430);ctx.bezierCurveTo(1430,505,1480,615,W,605);ctx.closePath();ctx.fill();
+ctx.fillStyle='#f5e7b7';ctx.beginPath();ctx.moveTo(0,710);ctx.bezierCurveTo(190,725,145,812,0,836);ctx.closePath();ctx.fill();
+ctx.fillStyle='#ead6df';ctx.beginPath();ctx.moveTo(W,710);ctx.bezierCurveTo(1430,760,1515,840,W,830);ctx.closePath();ctx.fill();
+// Navy header with subtle diagonal accent and golden swoop.
+const grad=ctx.createLinearGradient(0,0,W,160);grad.addColorStop(0,navy);grad.addColorStop(1,blue);ctx.fillStyle=grad;ctx.fillRect(0,0,W,169);
+ctx.save();ctx.beginPath();ctx.rect(0,0,W,169);ctx.clip();for(let x=-100;x<1750;x+=25)line(x,0,x+145,169,'#ffffff19',1);ctx.restore();
+ctx.beginPath();ctx.moveTo(0,170);ctx.bezierCurveTo(365,205,625,154,800,157);ctx.bezierCurveTo(1100,166,1320,203,1600,163);ctx.strokeStyle=gold;ctx.lineWidth=10;ctx.stroke();
+ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='700 29px Arial,sans-serif';ctx.fillText("KINGS NORTON GIRLS' SCHOOL",80,73);ctx.font='21px Arial,sans-serif';ctx.fillText('COMPUTER SCIENCE · TEACHING TOOLS',80,111);
+ctx.textAlign='right';ctx.fillStyle='#f7d785';ctx.font='700 25px Arial,sans-serif';ctx.fillText('KNGS',1515,88);
+// Decorative KNGS monogram shield, not an official crest.
+ctx.save();ctx.translate(cx,98);ctx.shadowColor='#081c394d';ctx.shadowBlur=18;ctx.shadowOffsetY=6;
+fillPath([[-73,-77],[73,-77],[73,12],[0,94],[-73,12]],'#d6a83a');
+fillPath([[-65,-67],[65,-67],[65,8],[0,81],[-65,8]],navy);ctx.restore();
+centered('KNGS',111,'700 32px Georgia,serif','#fff2c4');
+ctx.save();ctx.strokeStyle='#f5d68d';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(773,128);ctx.quadraticCurveTo(786,123,800,134);ctx.quadraticCurveTo(813,123,827,128);ctx.lineTo(827,149);ctx.quadraticCurveTo(810,145,800,152);ctx.quadraticCurveTo(787,145,773,149);ctx.closePath();ctx.stroke();ctx.restore();
+// Border
+ctx.strokeStyle=gold;ctx.lineWidth=9;ctx.strokeRect(24,20,W-48,H-40);
+ctx.strokeStyle='#f3dfb0';ctx.lineWidth=2;ctx.strokeRect(43,38,W-86,H-76);
+ctx.strokeStyle='#e1c47e';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(255,265);ctx.lineTo(1345,265);ctx.stroke();
+// Main title ribbon
+roundRect(ctx,430,204,740,74,9,'#f6df9c');
+centered('CERTIFICATE OF ACHIEVEMENT',250,'700 28px Arial,sans-serif',navy);
+star(385,242,15,gold);star(1215,242,15,gold);
+centered('Typing Challenge',352,'700 67px Georgia,serif',navy);
+centered('Presented in recognition of excellent keyboard skills to',419,'italic 28px Georgia,serif','#64758e');
+const nameSize=serifFit(name);centered(name,512,'700 '+nameSize+'px Georgia,serif',navy,1170);line(337,537,1263,537,gold,3);
+// Medal, red ribbon, rosette, stars and laurels
+laurel(-1,758,679,155,12,palette.bright);laurel(1,842,679,155,12,palette.bright);
+fillPath([[685,622],[758,641],[721,727],[642,707]],red);fillPath([[915,622],[842,641],[879,727],[958,707]],'#ce4d60');
+for(let i=0;i<24;i++){let a=i*Math.PI/12;line(cx+126*Math.cos(a),664+126*Math.sin(a),cx+140*Math.cos(a),664+140*Math.sin(a),'#d2a64066',3)}
+circle(cx,664,112,palette.dark);for(let i=0;i<28;i++){const a=i*2*Math.PI/28;circle(cx+101*Math.cos(a),664+101*Math.sin(a),9,palette.bright)}
+circle(cx,664,94,palette.pale);ctx.strokeStyle=palette.dark;ctx.lineWidth=5;ctx.beginPath();ctx.arc(cx,664,82,0,Math.PI*2);ctx.stroke();
+star(cx,614,22,palette.dark);centered(award.toUpperCase(),682,'700 40px Georgia,serif',palette.dark);centered('AWARD',716,'700 22px Arial,sans-serif',palette.dark);
+star(475,653,16,gold);star(1125,643,14,'#6aa8d0');star(1170,683,9,gold);star(414,691,9,'#6aa8d0');
+// Signature in handwritten-style font fallback (typographic mark, not an actual autograph)
+ctx.save();ctx.translate(1240,767);ctx.rotate(-.09);ctx.font='italic 51px "Segoe Script","Brush Script MT",cursive';ctx.fillStyle=navy;ctx.textAlign='center';ctx.fillText('Mr Willis',0,0,245);ctx.restore();
+line(1085,782,1390,782,gold,3);ctx.textAlign='center';ctx.font='700 17px Arial,sans-serif';ctx.fillStyle='#64758e';ctx.fillText('TEACHER SIGNATURE',1237,805);
+// Level line and results panel stay well below medal and signature
+centered('Level '+(latestAward.level+1)+' · '+levels[latestAward.level][0]+' · Passage '+(latestAward.passage+1),853,'700 27px Arial,sans-serif',navy,1230);
+roundRect(ctx,260,885,1080,120,26,'#eaf2fa');ctx.strokeStyle='#e1b650';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(260,885,1080,120,26);ctx.stroke();
+line(800,908,800,980,'#bccde0',2);
+ctx.textAlign='center';ctx.fillStyle=navy;ctx.font='700 27px Arial,sans-serif';ctx.fillText(Math.round(latestAward.wpm)+' WORDS PER MINUTE',520,958,485);ctx.fillText(latestAward.accuracy.toFixed(0)+'% ACCURACY',1060,958,460);
+// Speedometer and target ornaments
+ctx.strokeStyle=palette.dark;ctx.lineWidth=4;ctx.beginPath();ctx.arc(314,948,22,Math.PI,Math.PI*2);ctx.stroke();line(314,948,327,932,palette.dark,3);circle(314,948,4,palette.dark);
+circle(859,945,22,'#fff');ctx.strokeStyle=palette.dark;ctx.lineWidth=3;ctx.beginPath();ctx.arc(859,945,17,0,Math.PI*2);ctx.stroke();circle(859,945,7,palette.bright);
+ctx.textAlign='left';ctx.fillStyle='#556981';ctx.font='21px Arial,sans-serif';ctx.fillText('Awarded '+latestAward.earnedDate.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}),87,1053);
+ctx.textAlign='right';ctx.font='18px Arial,sans-serif';ctx.fillText('KNGS COMPUTER SCIENCE · LEARNING BY DOING',1510,1053);
+centered('Automatically generated from a completed browser-based typing challenge',1090,'16px Arial,sans-serif','#74849a');
+ctx.restore();
 }
 $('closeCertificate').onclick=()=>certificateDialog.close();
 certificateDialog.addEventListener('click',event=>{if(event.target===certificateDialog)certificateDialog.close()});
