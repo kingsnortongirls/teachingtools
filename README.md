@@ -140,3 +140,14 @@ Eight additional standalone browser activities have been added to the searchable
 | Character Encoding Lab (`character-encoding/`) | KS3, GCSE | ASCII questions; Unicode code points and real UTF-8 bytes via TextEncoder |
 
 Existing Big O learning tools (`complexity/`, `sorting/`) and packet simulations (`packets/`, `networks/`) were retained rather than duplicated. All new activities are static browser tools and require no student login. Guided code checks are formative and do not securely validate arbitrary source code. The educational LMC and turtle environments simplify real system behaviour. Browser-based previews and exports should not contain personal data.
+
+
+## Expanded practice banks (11 November 2026)
+
+- **Parsons Problems:** 30 staged, topic-filtered code-reordering puzzles spanning KS3, GCSE and A Level. Hint, order-check, output-reveal and in-session progress.
+- **Python Coding Lab:** 30 guided Python missions with starters, worked solutions, predicted-output checks and reflection tasks. The checker inspects expected features and does **not** execute arbitrary Python, so it is not a substitute for running and testing code.
+- **Web Development Studio:** 16 curriculum-sequenced HTML, CSS and JavaScript worked examples with explanations, formative feature checks, live sandboxed preview and independent extensions.
+- **Algorithm-a-Day:** 95 algorithm-tracing, selection, iteration, data structure and complexity questions, with daily selection, stage/topic filters, hints and worked answers.
+- **Typing Challenge:** 15 progressive levels with five passages each (75 total), positioning-based error highlighting, in-session completion records and speed/accuracy medals.
+
+**Testing and privacy:** These are standalone educational pages with no sign-in or remote progress storage. Session progress resets when the page reloads. Guided checks are not full code execution. The web preview permits JavaScript inside a sandbox, so students should not use live personal information or untrusted third-party scripts.
