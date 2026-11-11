@@ -151,3 +151,7 @@ Existing Big O learning tools (`complexity/`, `sorting/`) and packet simulations
 - **Typing Challenge:** 15 progressive levels with five passages each (75 total), positioning-based error highlighting, in-session completion records and speed/accuracy medals.
 
 **Testing and privacy:** These are standalone educational pages with no sign-in or remote progress storage. Session progress resets when the page reloads. Guided checks are not full code execution. The web preview permits JavaScript inside a sandbox, so students should not use live personal information or untrusted third-party scripts.
+
+### Typing certificate awards
+
+The Typing Challenge now unlocks a personalised certificate after a **completed** passage with a Bronze, Silver or Gold result. The name prompt opens automatically; pupils can preview a designed landscape certificate and save it locally as a high-resolution PNG. Certificates include the pupil-entered name, level, passage, tier, date, calculated WPM and accuracy. The name is rendered entirely in-browser, not transmitted to a server. Pupils can reopen the most recent award during the current page session. Bronze/Silver/Gold thresholds remain those published on the activity page.
