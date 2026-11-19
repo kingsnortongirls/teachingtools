@@ -27,13 +27,13 @@ function clueFor(value,base,source){let s=source===2?value.toString(2):source===
 function options(){let mode=$('mode').value,diff=$('difficulty').value,max=diff==='easy'?31:diff==='medium'?127:255,items=[],seen=new Set();let targets=mode==='binary'?[2,10]:mode==='hex'?[16,10]:[2,10,16];for(let v=1;v<=max;v++){for(let b of targets){let sources=mode==='binary'?(b===2?[10]:[2]):mode==='hex'?(b===16?[10]:[16]):[2,10,16].filter(x=>x!==b);for(let source of sources){let c=clueFor(v,b,source);if(c.answer.length<2||c.answer.length>8)continue;let k=c.answer+'-'+c.clue;if(!seen.has(k)){seen.add(k);items.push(c)}}}}return shuffle(items)}
 function makePuzzle(requested){
 const N=17,mid=8;let best=null;for(let attempt=0;attempt<24;attempt++){
-let grid=Array.from({length:N},()=>Array(N).fill(null)),entries=[],pool=options();
+let grid=Array.from({length:N},()=>Array(N).fill(null)),occupied=Array.from({length:N},()=>Array.from({length:N},()=>({across:false,down:false}))),entries=[],pool=options();
 function fits(word,r,c,dir){let dr=dir==='down'?1:0,dc=dir==='across'?1:0,L=word.length;if(r<0||c<0||r+dr*(L-1)>=N||c+dc*(L-1)>=N)return null;
 let beforeR=r-dr,beforeC=c-dc,afterR=r+dr*L,afterC=c+dc*L;
 if(beforeR>=0&&beforeC>=0&&beforeR<N&&beforeC<N&&grid[beforeR][beforeC])return null;
 if(afterR>=0&&afterC>=0&&afterR<N&&afterC<N&&grid[afterR][afterC])return null;
-let overlaps=0;for(let i=0;i<L;i++){let rr=r+dr*i,cc=c+dc*i,old=grid[rr][cc];if(old){if(old!==word[i])return null;overlaps++;}else if(dir==='across'){if(rr>0&&grid[rr-1][cc]||rr<N-1&&grid[rr+1][cc])return null}else{if(cc>0&&grid[rr][cc-1]||cc<N-1&&grid[rr][cc+1])return null}}return overlaps}
-function put(item,r,c,dir){for(let i=0;i<item.answer.length;i++)grid[r+(dir==='down'?i:0)][c+(dir==='across'?i:0)]=item.answer[i];entries.push({...item,r,c,dir})}
+let overlaps=0;for(let i=0;i<L;i++){let rr=r+dr*i,cc=c+dc*i,old=grid[rr][cc];if(old){if(old!==word[i]||occupied[rr][cc][dir])return null;overlaps++;}else if(dir==='across'){if(rr>0&&grid[rr-1][cc]||rr<N-1&&grid[rr+1][cc])return null}else{if(cc>0&&grid[rr][cc-1]||cc<N-1&&grid[rr][cc+1])return null}}return overlaps}
+function put(item,r,c,dir){for(let i=0;i<item.answer.length;i++){let rr=r+(dir==='down'?i:0),cc=c+(dir==='across'?i:0);if(occupied[rr][cc][dir])throw Error('Crossword placement overlap');grid[rr][cc]=item.answer[i];occupied[rr][cc][dir]=true;}entries.push({...item,r,c,dir})}
 let seed=pool.find(x=>x.answer.length>=5)||pool[0];pool.splice(pool.indexOf(seed),1);put(seed,mid,Math.floor((N-seed.answer.length)/2),'across');
 let usedValues=new Set([seed.value]),usedAnswers=new Set([seed.answer]);let fails=0;
 while(entries.length<requested&&fails<240&&pool.length){
