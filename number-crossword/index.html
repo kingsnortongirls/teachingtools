@@ -54,9 +54,10 @@ for(let dir of ['across','down']){let list=$(dir);list.textContent='';entries.fi
 document.body.classList.toggle('show-answers',visible);$('reveal').textContent=visible?'Hide answers':'Show answers';$('status').textContent=entries.length+' clues generated. Solve the crossword!';
 }
 function generate(){visible=false;current=makePuzzle(Number($('quantity').value));draw()}
-$('generate').addEventListener('click',generate);$('reveal').addEventListener('click',()=>{visible=!visible;document.body.classList.toggle('show-answers',visible);$('reveal').textContent=visible?'Hide answers':'Show answers'});
+function teacherAccess(){const supplied=window.prompt('Teacher password required to view or print the answer sheet:');if(supplied===null)return false;if(supplied!=='binary'){window.alert('Incorrect teacher password.');return false}return true}
+$('generate').addEventListener('click',generate);$('reveal').addEventListener('click',()=>{if(!visible&&!teacherAccess())return;visible=!visible;document.body.classList.toggle('show-answers',visible);$('reveal').textContent=visible?'Hide answers':'Show answers'});
 $('reset').addEventListener('click',()=>{document.querySelectorAll('#grid input').forEach(i=>{i.value='';i.classList.remove('wrong','correct')});$('status').textContent='Entries cleared.'});
 $('check').addEventListener('click',()=>{let right=0,all=0;document.querySelectorAll('#grid input').forEach(i=>{all++;let good=i.value.toUpperCase()===i.dataset.answer;if(good)right++;i.classList.toggle('correct',good);i.classList.toggle('wrong',Boolean(i.value)&&!good)});$('status').textContent=right===all?'Excellent! Every square is correct.':right+' of '+all+' squares correct. Empty or red squares still need attention.'});
 function printPuzzle(key){let inputs=[...document.querySelectorAll('#grid input')];let saved=inputs.map(i=>i.value);if(key)inputs.forEach(i=>i.value=i.dataset.answer);else inputs.forEach(i=>i.value='');document.body.classList.toggle('print-key',key);const restore=()=>{inputs.forEach((i,j)=>i.value=saved[j]);document.body.classList.remove('print-key');window.removeEventListener('afterprint',restore)};window.addEventListener('afterprint',restore);window.print();setTimeout(restore,3000)}
-$('print').onclick=()=>printPuzzle(false);$('printkey').onclick=()=>printPuzzle(true);generate();
+$('print').onclick=()=>printPuzzle(false);$('printkey').onclick=()=>{if(teacherAccess())printPuzzle(true)};generate();
 </script></body></html>
